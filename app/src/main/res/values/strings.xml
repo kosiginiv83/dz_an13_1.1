@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">NMedia</string>
     <string name="nmedia">NMedia!</string>
+    <string name="author">Netology. Changing careers through education</string>
+    <string name="published">yesterday at 10:24</string>
+    <string name="content">On October 13, the free marathon "Three skills that every businessman needs" starts. If your business is consistently profitable, it\'s time to move on to scaling it. We will tell you how to set up processes, effectively manage the financial flow and where to find money for development. Three expert entrepreneurs and three topics they know best are waiting for you: attracting investments, management accounting, building business processes. Register and start developing your business right now → http://netolo.gy/fUp</string>
 </resources>
