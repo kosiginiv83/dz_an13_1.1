@@ -56,10 +56,10 @@ class MainActivity : AppCompatActivity() {
     fun getFormatNum(num: Int) : String {
         return when(num) {
             in 0..999 -> num.toString()
-//            in 1000..9_999 -> String.format("%.1f", num / 1000.0) + "K" // format округляет
-            in 1000..9_999 -> "${num / 1000}.${num % 1000 / 100}K"
-            in 10_000..999_999 -> (num / 1000).toString() + "K"
-            in 1_000_000..Int.MAX_VALUE -> "${num / 1_000_000}.${num%1_000_000 / 100_000}M"
+//            in 1_000..9_999 -> String.format("%.1f", num / 1_000.0) + "K" // format округляет
+            in 1_000..9_999 -> "${num / 1_000}.${num % 1_000 / 100}K"
+            in 10_000..999_999 -> (num / 1_000).toString() + "K"
+            in 1_000_000..Int.MAX_VALUE -> "${num / 1_000_000}.${num % 1_000_000 / 100_000}M"
             else -> throw IllegalArgumentException("Некорректное число")
         }
     }
