@@ -26,26 +26,24 @@
         android:ellipsize="end"
         android:fontFamily="@font/montserrat_bold"
         android:maxLines="1"
-        tools:text="@sample/posts.json/data/author"
-        android:text="@string/author"
         android:textColor="#191414"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/published"
         app:layout_constraintEnd_toStartOf="@id/more_button"
         app:layout_constraintStart_toEndOf="@+id/avatar"
         app:layout_constraintTop_toTopOf="@+id/avatar"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="@sample/posts.json/data/author" />
 
     <TextView
         android:id="@+id/published"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        tools:text="@sample/posts.json/data/published"
-        android:text="@string/published"
         app:layout_constraintBottom_toBottomOf="@+id/avatar"
         app:layout_constraintStart_toStartOf="@+id/author"
-        app:layout_constraintTop_toBottomOf="@+id/author" />
+        app:layout_constraintTop_toBottomOf="@+id/author"
+        tools:text="@sample/posts.json/data/published" />
 
     <ImageButton
         android:id="@+id/more_button"
@@ -72,17 +70,16 @@
         android:layout_marginTop="16dp"
         android:autoLink="web"
         android:ellipsize="marquee"
-        android:maxLines="20"
         android:fontFamily="@font/montserrat_bold"
         android:lineSpacingExtra="4sp"
-        tools:text="@sample/posts.json/data/content"
-        android:text="@string/content"
+        android:maxLines="13"
         android:textColor="#191414"
         android:textColorLink="#012C3A"
         app:layout_constraintBottom_toTopOf="@id/post_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier_header" />
+        app:layout_constraintTop_toBottomOf="@id/barrier_header"
+        tools:text="@sample/posts.json/data/content" />
 
     <ImageView
         android:id="@+id/post_img"
@@ -109,58 +106,57 @@
         android:id="@+id/ic_eye"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:tint="#201E1E"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/views_count"
         app:layout_constraintEnd_toStartOf="@+id/views_count"
         app:layout_constraintTop_toTopOf="@+id/views_count"
-        android:layout_marginEnd="8dp"
-        app:srcCompat="@android:drawable/ic_menu_view" />
+        app:srcCompat="@android:drawable/ic_menu_view"
+        app:tint="#201E1E" />
 
     <ImageView
-        android:id="@+id/ic_arrow"
+        android:id="@+id/btn_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:tint="#201E1E"
         app:layout_constraintBottom_toBottomOf="@+id/likes_count"
         app:layout_constraintStart_toEndOf="@+id/likes_count"
         app:layout_constraintTop_toTopOf="@id/likes_count"
-        app:srcCompat="@android:drawable/ic_menu_share" />
+        app:srcCompat="@android:drawable/ic_menu_share"
+        app:tint="#201E1E" />
 
     <ImageView
-        android:id="@+id/ic_heart"
+        android:id="@+id/btn_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:tint="#201E1E"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barrier_img_bottom"
-        app:srcCompat="@android:drawable/star_off" />
+        app:srcCompat="@drawable/ic_heart2" />
 
     <TextView
         android:id="@+id/likes_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="50"
-        app:layout_constraintBottom_toBottomOf="@+id/ic_heart"
-        app:layout_constraintStart_toEndOf="@+id/ic_heart"
-        app:layout_constraintTop_toTopOf="@+id/ic_heart" />
+        tools:text="100"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_like"
+        app:layout_constraintStart_toEndOf="@+id/btn_like"
+        app:layout_constraintTop_toTopOf="@+id/btn_like" />
 
     <TextView
-        android:id="@+id/repost_count"
+        android:id="@+id/shares_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="20"
-        app:layout_constraintBottom_toBottomOf="@+id/ic_arrow"
-        app:layout_constraintStart_toEndOf="@+id/ic_arrow"
-        app:layout_constraintTop_toTopOf="@+id/ic_arrow" />
+        tools:text="50"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_share"
+        app:layout_constraintStart_toEndOf="@+id/btn_share"
+        app:layout_constraintTop_toTopOf="@+id/btn_share" />
 
     <TextView
         android:id="@+id/views_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="3k"
+        tools:text="1k"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barrier_img_bottom" />
 
