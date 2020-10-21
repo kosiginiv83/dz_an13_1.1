@@ -2,7 +2,6 @@ package ru.netology.nmedia
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.*
 import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.dto.Post
 
@@ -28,9 +27,9 @@ class MainActivity : AppCompatActivity() {
             published.text = post.published
             content.text = post.content
             if (post.likedByMe) btnLike.setImageResource(R.drawable.ic_heart_red)
-            likesCount.text = getFormatNum(post.likesCount)
-            sharesCount.text = getFormatNum(post.sharesCount)
-            viewsCount.text = getFormatNum(post.viewsCount)
+            likesCount.text = getFormattedNum(post.likesCount)
+            sharesCount.text = getFormattedNum(post.sharesCount)
+            viewsCount.text = getFormattedNum(post.viewsCount)
 
             btnLike.setOnClickListener {
                 post.likedByMe = !post.likedByMe
@@ -43,24 +42,21 @@ class MainActivity : AppCompatActivity() {
                         R.drawable.ic_heart2
                     }
                 )
-                likesCount.text = getFormatNum(post.likesCount)
+                likesCount.text = getFormattedNum(post.likesCount)
             }
 
             btnShare.setOnClickListener {
                 post.sharesCount++
-                sharesCount.text = getFormatNum(post.sharesCount)
+                sharesCount.text = getFormattedNum(post.sharesCount)
             }
         }
     }
 
-    fun getFormatNum(num: Int) : String {
-        return when(num) {
-            in 0..999 -> num.toString()
-//            in 1_000..9_999 -> String.format("%.1f", num / 1_000.0) + "K" // format округляет
-            in 1_000..9_999 -> "${num / 1_000}.${num % 1_000 / 100}K"
-            in 10_000..999_999 -> (num / 1_000).toString() + "K"
-            in 1_000_000..Int.MAX_VALUE -> "${num / 1_000_000}.${num % 1_000_000 / 100_000}M"
-            else -> throw IllegalArgumentException("Некорректное число")
-        }
+    fun getFormattedNum(num: Int) : String = when(num) {
+        in 0..999 -> num.toString()
+        in 1_000..9_999 -> "${num / 1_000}.${num % 1_000 / 100}K"
+        in 10_000..999_999 -> (num / 1_000).toString() + "K"
+        in 1_000_000..Int.MAX_VALUE -> "${num / 1_000_000}.${num % 1_000_000 / 100_000}M"
+        else -> throw IllegalArgumentException("Некорректное число")
     }
 }
