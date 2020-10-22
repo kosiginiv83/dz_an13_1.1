@@ -130,7 +130,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barrier_img_bottom"
-        app:srcCompat="@drawable/ic_heart2" />
+        tools:srcCompat="@drawable/ic_heart2" />
 
     <TextView
         android:id="@+id/likes_count"
