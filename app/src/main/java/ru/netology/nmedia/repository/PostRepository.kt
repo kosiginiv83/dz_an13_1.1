@@ -2,41 +2,70 @@ package ru.netology.nmedia.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ru.netology.nmedia.R
 import ru.netology.nmedia.dto.Post
 
 
 interface PostRepository {
-    fun get(): LiveData<Post>
-    fun like()
-    fun share()
+    fun getAll(): LiveData<List<Post>>
+    fun likeById(id: Long)
+    fun shareById(id: Long)
 }
 
 
 class PostRepositoryInMemoryImpl : PostRepository {
-    private var post = Post(
-        id = 1,
-        author = "Нетология. Меняем карьеру через образование",
-        content = "13 октября стартует бесплатный марафон «Три навыка, которые нужны каждому бизнесмену». Если ваш бизнес стабильно приносит прибыль, пора переходить к его масштабированию. Расскажем, как настроить процессы, эффективно управлять финансовым потоком и где найти деньги на развитие. Вас ждут три эксперта-предпринимателя и три темы, в которых они разбираются лучше всего: привлечение инвестиций, управленческий учёт, выстраивание бизнес-процессов. Регистрируйтесь и начните развивать своё дело прямо сейчас → http://netolo.gy/fUp",
-        published = "вчера в 10:24",
-        likedByMe = false,
-        likesCount = 9_999,
-        sharesCount = 995,
-        viewsCount = 1_200_000
+    private var posts = listOf(
+        Post(
+            id = 1,
+            author = "Нетология. Меняем карьеру через образование",
+            content = "13 октября стартует бесплатный марафон «Три навыка, которые нужны каждому бизнесмену». Если ваш бизнес стабильно приносит прибыль, пора переходить к его масштабированию. Расскажем, как настроить процессы, эффективно управлять финансовым потоком и где найти деньги на развитие. Вас ждут три эксперта-предпринимателя и три темы, в которых они разбираются лучше всего: привлечение инвестиций, управленческий учёт, выстраивание бизнес-процессов. Регистрируйтесь и начните развивать своё дело прямо сейчас → http://netolo.gy/fUp",
+            published = "вчера в 10:24",
+            likedByMe = false,
+            likesCount = 9_999,
+            sharesCount = 995,
+            viewsCount = 1_200_000,
+            imgLink = R.drawable.post_image
+        ),
+        Post(
+            id = 2,
+            author = "Нетология. Меняем карьеру через образование",
+            content = "Работой на удалёнке уже никого не удивить: мифы о ноутбуке под пальмой и большом количестве свободного времени давно развеяны, ведь удалённая работа требует высокого уровня самоорганизованности и ответственности.\n" +
+                    "\n" +
+                    "Собрали подборку статей об удалёнке и фрилансе \uD83D\uDC47\n" +
+                    "\n" +
+                    "▪5 книг для тех, кто переходит на удалёнку → http://netolo.gy/fWN\n" +
+                    "▪Честно об удалённой работе: личный опыт → http://netolo.gy/fWM\n" +
+                    "▪Популярные ошибки фрилансеров, которые мешают получать заказы, и как их избежать → http://netolo.gy/fWO\n" +
+                    "▪О сложностях и проблемах, с которыми можно столкнуться на фрилансе → http://netolo.gy/fWP\n" +
+                    "▪Большая подборка статей об удалённой работе и цифровых профессиях → http://netolo.gy/fWQ",
+            published = "сегодня в 10:49",
+            likedByMe = false,
+            likesCount = 99,
+            sharesCount = 95,
+            viewsCount = 1_000,
+            imgLink = R.drawable.post_image_2
+        ),
     )
 
-    private val data = MutableLiveData(post)
+    private val data = MutableLiveData(posts)
 
-    override fun get(): LiveData<Post> = data
+    override fun getAll(): LiveData<List<Post>> = data
 
-    override fun like() {
-        val isLiked = !post.likedByMe
-        val newLikesCount = if (isLiked) (post.likesCount + 1) else (post.likesCount - 1)
-        post = post.copy(likedByMe = isLiked, likesCount = newLikesCount)
-        data.value = post
+    override fun likeById(id: Long) {
+        posts = posts.map { post ->
+            if (post.id != id) post else {
+                val isLiked = !post.likedByMe
+                val newLikesCount = if (isLiked) (post.likesCount + 1) else (post.likesCount - 1)
+                post.copy(likedByMe = isLiked, likesCount = newLikesCount)
+            }
+        }
+        data.value = posts
     }
 
-    override fun share() {
-        post = post.copy(sharesCount = post.sharesCount + 1)
-        data.value = post
+    override fun shareById(id: Long) {
+        posts = posts.map {
+            if (it.id != id) it else it.copy(sharesCount = it.sharesCount + 1)
+        }
+        data.value = posts
     }
 }
