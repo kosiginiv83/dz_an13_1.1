@@ -7,12 +7,14 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 
-typealias OnLikeListener = (post: Post) -> Unit
-typealias OnShareListener = (post: Post) -> Unit
 
+interface OnInteractionListener {
+    fun onLike(post: Post) {}
+    fun onShare(post: Post) {}
+}
 
-class PostsAdapter(private val onLikeListener: OnLikeListener,
-         private val onShareListener: OnShareListener): RecyclerView.Adapter<PostViewHolder>() {
+class PostsAdapter(val onInteractionListener: OnInteractionListener)
+            : RecyclerView.Adapter<PostViewHolder>() {
     var postsList = emptyList<Post>()
         set(value) {
             field = value
@@ -21,7 +23,7 @@ class PostsAdapter(private val onLikeListener: OnLikeListener,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(binding, onLikeListener, onShareListener)
+        return PostViewHolder(binding, onInteractionListener)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
@@ -35,8 +37,7 @@ class PostsAdapter(private val onLikeListener: OnLikeListener,
 
 class PostViewHolder(
     private val binding: CardPostBinding,
-    private val onLikeListener: OnLikeListener,
-    private val onShareListener: OnShareListener
+    private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) {
         binding.apply {
@@ -49,8 +50,8 @@ class PostViewHolder(
             likesCount.text = getFormattedNum(post.likesCount)
             sharesCount.text = getFormattedNum(post.sharesCount)
             viewsCount.text = getFormattedNum(post.viewsCount)
-            btnLike.setOnClickListener { onLikeListener(post) }
-            btnShare.setOnClickListener { onShareListener(post) }
+            btnLike.setOnClickListener { onInteractionListener.onLike(post) }
+            btnShare.setOnClickListener { onInteractionListener.onShare(post) }
             postImg.setImageResource(post.imgLink)
         }
     }
