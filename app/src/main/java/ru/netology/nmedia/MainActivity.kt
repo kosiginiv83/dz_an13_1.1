@@ -21,14 +21,13 @@ class MainActivity : AppCompatActivity() {
             override fun onLike(post: Post) {
                 viewModel.likeById(post.id)
             }
-
             override fun onShare(post: Post) {
                 viewModel.shareById(post.id)
             }
         })
         binding.postsList.adapter = adapter
         viewModel.data.observe(this) { posts ->
-            adapter.postsList = posts
+            adapter.submitList(posts)
         }
     }
 }

@@ -2,6 +2,8 @@ package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
@@ -13,13 +15,14 @@ interface OnInteractionListener {
     fun onShare(post: Post) {}
 }
 
-class PostsAdapter(val onInteractionListener: OnInteractionListener)
-            : RecyclerView.Adapter<PostViewHolder>() {
-    var postsList = emptyList<Post>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
+class PostsAdapter(
+    private val onInteractionListener: OnInteractionListener
+) : ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
+//    var postsList = emptyList<Post>()
+//        set(value) {
+//            field = value
+//            notifyDataSetChanged()
+//        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -27,11 +30,12 @@ class PostsAdapter(val onInteractionListener: OnInteractionListener)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        val post = postsList[position]
+//        val post = postsList[position]
+        val post = getItem(position)
         holder.bind(post)
     }
 
-    override fun getItemCount(): Int = postsList.size
+//    override fun getItemCount(): Int = postsList.size
 }
 
 
@@ -62,5 +66,16 @@ class PostViewHolder(
         in 10_000..999_999 -> (num / 1_000).toString() + "K"
         in 1_000_000..Int.MAX_VALUE -> "${num / 1_000_000}.${num % 1_000_000 / 100_000}M"
         else -> throw IllegalArgumentException("Некорректное число")
+    }
+}
+
+
+class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
+    override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
+        return oldItem == newItem
     }
 }
