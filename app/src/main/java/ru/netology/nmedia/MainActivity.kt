@@ -3,6 +3,10 @@ package ru.netology.nmedia
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.posts_list.*
+import ru.netology.nmedia.adapter.FooterAdapter
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.ActivityMainBinding
@@ -17,7 +21,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val viewModel: PostViewModel by viewModels()
-        val adapter = PostsAdapter(object : OnInteractionListener{
+
+        val postsAdapter = PostsAdapter(object : OnInteractionListener{
             override fun onLike(post: Post) {
                 viewModel.likeById(post.id)
             }
@@ -25,9 +30,18 @@ class MainActivity : AppCompatActivity() {
                 viewModel.shareById(post.id)
             }
         })
-        binding.postsList.adapter = adapter
+
+//        binding.postsList.adapter = postsAdapter
+
+        val footerAdapter = FooterAdapter()
+        val concatAdapter = ConcatAdapter(postsAdapter, footerAdapter)
+        binding.mainRecyclView.layoutManager = LinearLayoutManager(this)
+
+        binding.mainRecyclView.adapter = concatAdapter
+
+
         viewModel.data.observe(this) { posts ->
-            adapter.submitList(posts)
+            postsAdapter.submitList(posts)
         }
     }
 }

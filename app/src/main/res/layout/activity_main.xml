@@ -4,14 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+
     tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/postsList"
+        android:id="@+id/mainRecyclView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/card_post"
-        />
+        android:layout_height="match_parent"
+        android:isScrollContainer="true"
+
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
 </FrameLayout>
