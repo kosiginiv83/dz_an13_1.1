@@ -17,7 +17,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val viewModel: PostViewModel by viewModels()
-        val adapter = PostsAdapter(object : OnInteractionListener{
+
+        val postsAdapter = PostsAdapter(object : OnInteractionListener{
             override fun onLike(post: Post) {
                 viewModel.likeById(post.id)
             }
@@ -25,9 +26,13 @@ class MainActivity : AppCompatActivity() {
                 viewModel.shareById(post.id)
             }
         })
-        binding.postsList.adapter = adapter
+
+//        binding.postsList.adapter = postsAdapter
+
+
+
         viewModel.data.observe(this) { posts ->
-            adapter.submitList(posts)
+            postsAdapter.submitList(posts)
         }
     }
 }
