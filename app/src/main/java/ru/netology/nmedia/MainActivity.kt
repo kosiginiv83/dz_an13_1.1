@@ -31,14 +31,13 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-//        binding.postsList.adapter = postsAdapter
+        binding.postsList.adapter = postsAdapter
+        binding.postsList.layoutManager = LinearLayoutManager(this)
 
-        val footerAdapter = FooterAdapter()
-        val concatAdapter = ConcatAdapter(postsAdapter, footerAdapter)
-        binding.mainRecyclView.layoutManager = LinearLayoutManager(this)
-
-        binding.mainRecyclView.adapter = concatAdapter
-
+//        val footerAdapter = FooterAdapter()
+//        val concatAdapter = ConcatAdapter(postsAdapter, footerAdapter)
+//
+//        binding.mainRecyclView.adapter = concatAdapter
 
         viewModel.data.observe(this) { posts ->
             postsAdapter.submitList(posts)

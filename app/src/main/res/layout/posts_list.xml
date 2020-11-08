@@ -2,12 +2,9 @@
 <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/postsList"
+    android:id="@+id/postsList_"
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:padding="8dp"
-    tools:listitem="@layout/card_post"
-
-    >
-
+    tools:listitem="@layout/card_post">
 </androidx.recyclerview.widget.RecyclerView>
