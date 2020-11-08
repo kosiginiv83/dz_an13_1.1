@@ -38,8 +38,7 @@ class MainActivity : AppCompatActivity() {
         binding.mainRecyclView.layoutManager = LinearLayoutManager(this)
 
         binding.mainRecyclView.adapter = concatAdapter
-
-
+        
         viewModel.data.observe(this) { posts ->
             postsAdapter.submitList(posts)
         }
