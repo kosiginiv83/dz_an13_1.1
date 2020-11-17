@@ -10,5 +10,5 @@ data class Post (
     val likesCount: Int,
     val sharesCount: Int,
     val viewsCount: Int,
-    val imgLink: Int,
+    val imgLink: Int?,
 )

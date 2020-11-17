@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
-    android:paddingBottom="40dp"
     tools:context=".MainActivity">
 
     <ImageView
@@ -28,7 +27,7 @@
         android:textColor="#191414"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/published"
-        app:layout_constraintEnd_toStartOf="@id/more_button"
+        app:layout_constraintEnd_toStartOf="@id/menu_button"
         app:layout_constraintStart_toEndOf="@+id/avatar"
         app:layout_constraintTop_toTopOf="@+id/avatar"
         app:layout_constraintVertical_chainStyle="packed"
@@ -45,7 +44,7 @@
         tools:text="@sample/posts.json/data/published" />
 
     <ImageButton
-        android:id="@+id/more_button"
+        android:id="@+id/menu_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#00FFFFFF"
@@ -64,12 +63,13 @@
 
     <TextView
         android:id="@+id/content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:autoLink="web"
         android:ellipsize="marquee"
         android:fontFamily="@font/montserrat_bold"
+        android:gravity="left"
         android:lineSpacingExtra="4sp"
         android:textColor="#191414"
         android:textColorLink="#012C3A"
