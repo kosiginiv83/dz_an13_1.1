@@ -2,6 +2,7 @@ package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -18,10 +19,14 @@ fun getFormattedNum(num: Int) : String = when(num) {
     else -> throw IllegalArgumentException("Некорректное число")
 }
 
+
 interface OnInteractionListener {
     fun onLike(post: Post) {}
     fun onShare(post: Post) {}
+    fun onEdit(post: Post) {}
+    fun onRemove(post: Post) {}
 }
+
 
 class PostsAdapter(
     private val onInteractionListener: OnInteractionListener
@@ -51,8 +56,9 @@ class PostsAdapter(
                     holder.binding.sharesCount.text = getFormattedNum(post.sharesCount)
                 PostDiffCallback.VIEWS_COUNT ->
                     holder.binding.viewsCount.text = getFormattedNum(post.viewsCount)
-                PostDiffCallback.CONTENT ->
+                PostDiffCallback.CONTENT -> {
                     holder.binding.content.text = post.content
+                }
                 PostDiffCallback.PUBLISHED ->
                     holder.binding.published.text = post.published
 //                else -> super.onBindViewHolder(holder, position, payloads)
@@ -80,7 +86,26 @@ class PostViewHolder(
             viewsCount.text = getFormattedNum(post.viewsCount)
             btnLike.setOnClickListener { onInteractionListener.onLike(post) }
             btnShare.setOnClickListener { onInteractionListener.onShare(post) }
-            postImg.setImageResource(post.imgLink)
+            postImg.setImageResource(post.imgLink ?: 0)
+
+            menuButton.setOnClickListener {
+                PopupMenu(it.context, it).apply {
+                    inflate(R.menu.popup_menu)
+                    setOnMenuItemClickListener { item ->
+                        when (item.itemId) {
+                            R.id.removePost -> {
+                                onInteractionListener.onRemove(post)
+                                true
+                            }
+                            R.id.editPost -> {
+                                onInteractionListener.onEdit(post)
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                }.show()
+            }
         }
     }
 }

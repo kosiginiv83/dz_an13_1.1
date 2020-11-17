@@ -10,21 +10,23 @@ interface PostRepository {
     fun getAll(): LiveData<List<Post>>
     fun likeById(id: Long)
     fun shareById(id: Long)
+    fun removeById(id: Long)
+    fun savePost(post: Post)
 }
 
 
 class PostRepositoryInMemoryImpl : PostRepository {
     private var posts = listOf(
         Post(
-            id = 1,
+            id = 3,
             author = "Нетология. Меняем карьеру через образование",
-            content = "13 октября стартует бесплатный марафон «Три навыка, которые нужны каждому бизнесмену». Если ваш бизнес стабильно приносит прибыль, пора переходить к его масштабированию. Расскажем, как настроить процессы, эффективно управлять финансовым потоком и где найти деньги на развитие. Вас ждут три эксперта-предпринимателя и три темы, в которых они разбираются лучше всего: привлечение инвестиций, управленческий учёт, выстраивание бизнес-процессов. Регистрируйтесь и начните развивать своё дело прямо сейчас → http://netolo.gy/fUp",
-            published = "вчера в 10:24",
+            content = "учитесь и начните",
+            published = "вчера в 10:48",
             likedByMe = false,
             likesCount = 9_999,
             sharesCount = 995,
             viewsCount = 1_200_000,
-            imgLink = R.drawable.post_image
+            imgLink = null
         ),
         Post(
             id = 2,
@@ -45,11 +47,43 @@ class PostRepositoryInMemoryImpl : PostRepository {
             viewsCount = 1_000,
             imgLink = R.drawable.post_image_2
         ),
+        Post(
+            id = 1,
+            author = "Нетология. Меняем карьеру через образование",
+            content = "13 октября стартует бесплатный марафон «Три навыка, которые нужны каждому бизнесмену». Если ваш бизнес стабильно приносит прибыль, пора переходить к его масштабированию. Расскажем, как настроить процессы, эффективно управлять финансовым потоком и где найти деньги на развитие. Вас ждут три эксперта-предпринимателя и три темы, в которых они разбираются лучше всего: привлечение инвестиций, управленческий учёт, выстраивание бизнес-процессов. Регистрируйтесь и начните развивать своё дело прямо сейчас → http://netolo.gy/fUp",
+            published = "вчера в 10:24",
+            likedByMe = false,
+            likesCount = 9_999,
+            sharesCount = 995,
+            viewsCount = 1_200_000,
+            imgLink = R.drawable.post_image
+        ),
     )
 
     private val data = MutableLiveData(posts)
 
+    private var nextId = posts.size.toLong()
+
     override fun getAll(): LiveData<List<Post>> = data
+
+    override fun savePost(post: Post) {
+        if (post.id == 0L) {
+            posts = listOf(
+                post.copy(
+                    id = ++nextId,
+                    author = "Me",
+                    published = "Now"
+                )
+            ) + posts
+            data.value = posts
+            return
+        }
+
+        posts = posts.map {
+            if (it.id != post.id) it else it.copy(content = post.content)
+        }
+        data.value = posts
+    }
 
     override fun likeById(id: Long) {
         posts = posts.map { post ->
@@ -66,6 +100,11 @@ class PostRepositoryInMemoryImpl : PostRepository {
         posts = posts.map {
             if (it.id != id) it else it.copy(sharesCount = it.sharesCount + 1)
         }
+        data.value = posts
+    }
+
+    override fun removeById(id: Long) {
+        posts = posts.filter { it.id != id }
         data.value = posts
     }
 }
