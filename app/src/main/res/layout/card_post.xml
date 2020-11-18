@@ -24,7 +24,6 @@
         android:ellipsize="end"
         android:fontFamily="@font/montserrat_bold"
         android:maxLines="1"
-        android:textColor="#191414"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/published"
         app:layout_constraintEnd_toStartOf="@id/menu_button"
@@ -71,8 +70,6 @@
         android:fontFamily="@font/montserrat_bold"
         android:gravity="left"
         android:lineSpacingExtra="4sp"
-        android:textColor="#191414"
-        android:textColorLink="#012C3A"
         app:layout_constraintBottom_toTopOf="@id/post_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -111,7 +108,7 @@
         app:layout_constraintEnd_toStartOf="@+id/views_count"
         app:layout_constraintTop_toTopOf="@+id/views_count"
         app:srcCompat="@android:drawable/ic_menu_view"
-        app:tint="#201E1E" />
+         />
 
     <ImageView
         android:id="@+id/btn_share"
@@ -122,15 +119,21 @@
         app:layout_constraintStart_toEndOf="@+id/likes_count"
         app:layout_constraintTop_toTopOf="@id/likes_count"
         app:srcCompat="@android:drawable/ic_menu_share"
-        app:tint="#201E1E" />
+         />
 
-    <ImageView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checkable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barrier_img_bottom"
-        tools:srcCompat="@drawable/ic_heart2" />
+        android:contentDescription="Like"
+        app:icon="@drawable/like_selector"
+        tools:icon="@drawable/ic_heart2"
+        tools:checked="true"
+        tools:text="100"
+        style="@style/Widget.AppTheme.LikeCheckBox"/>
 
     <TextView
         android:id="@+id/likes_count"

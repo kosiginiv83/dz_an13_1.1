@@ -47,9 +47,7 @@ class PostsAdapter(
         val post = getItem(position)
         payloads.forEach {
             when (it) {
-                PostDiffCallback.LIKED_BY_ME -> holder.binding.btnLike.setImageResource(
-                    if (post.likedByMe) R.drawable.ic_heart_red else R.drawable.ic_heart2
-                )
+                PostDiffCallback.LIKED_BY_ME -> holder.binding.btnLike.isChecked = post.likedByMe
                 PostDiffCallback.LIKES_COUNT ->
                     holder.binding.likesCount.text = getFormattedNum(post.likesCount)
                 PostDiffCallback.SHARES_COUNT ->
@@ -78,9 +76,7 @@ class PostViewHolder(
             author.text = post.author
             published.text = post.published
             content.text = post.content
-            btnLike.setImageResource(
-                if (post.likedByMe) R.drawable.ic_heart_red else R.drawable.ic_heart2
-            )
+            btnLike.isChecked = post.likedByMe
             likesCount.text = getFormattedNum(post.likesCount)
             sharesCount.text = getFormattedNum(post.sharesCount)
             viewsCount.text = getFormattedNum(post.viewsCount)
