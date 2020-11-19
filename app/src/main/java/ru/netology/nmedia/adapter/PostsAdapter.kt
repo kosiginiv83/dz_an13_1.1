@@ -47,11 +47,12 @@ class PostsAdapter(
         val post = getItem(position)
         payloads.forEach {
             when (it) {
-                PostDiffCallback.LIKED_BY_ME -> holder.binding.btnLike.isChecked = post.likedByMe
+                PostDiffCallback.LIKED_BY_ME ->
+                    holder.binding.btnLike.isChecked = post.likedByMe
                 PostDiffCallback.LIKES_COUNT ->
-                    holder.binding.likesCount.text = getFormattedNum(post.likesCount)
+                    holder.binding.btnLike.text = getFormattedNum(post.likesCount)
                 PostDiffCallback.SHARES_COUNT ->
-                    holder.binding.sharesCount.text = getFormattedNum(post.sharesCount)
+                    holder.binding.btnShare.text = getFormattedNum(post.sharesCount)
                 PostDiffCallback.VIEWS_COUNT ->
                     holder.binding.viewsCount.text = getFormattedNum(post.viewsCount)
                 PostDiffCallback.CONTENT -> {
@@ -77,8 +78,8 @@ class PostViewHolder(
             published.text = post.published
             content.text = post.content
             btnLike.isChecked = post.likedByMe
-            likesCount.text = getFormattedNum(post.likesCount)
-            sharesCount.text = getFormattedNum(post.sharesCount)
+            btnLike.text = getFormattedNum(post.likesCount)
+            btnShare.text = getFormattedNum(post.sharesCount)
             viewsCount.text = getFormattedNum(post.viewsCount)
             btnLike.setOnClickListener { onInteractionListener.onLike(post) }
             btnShare.setOnClickListener { onInteractionListener.onShare(post) }
