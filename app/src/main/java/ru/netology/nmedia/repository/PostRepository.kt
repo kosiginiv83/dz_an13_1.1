@@ -15,7 +15,14 @@ interface PostRepository {
 }
 
 
-class PostRepositoryInMemoryImpl : PostRepository {
+class PostRepositoryInMemoryImpl private constructor(): PostRepository {
+    private object HOLDER {
+        val INSTANCE = PostRepositoryInMemoryImpl()
+    }
+    companion object {
+        val instance: PostRepositoryInMemoryImpl by lazy { HOLDER.INSTANCE }
+    }
+
     private var posts = listOf(
         Post(
             id = 3,

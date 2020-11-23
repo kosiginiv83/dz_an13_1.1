@@ -21,13 +21,9 @@ private val empty = Post(
 
 
 class PostViewModel : ViewModel() {
-    private val repository: PostRepository = PostRepositoryInMemoryImpl()
+    private val repository: PostRepository = PostRepositoryInMemoryImpl.instance
     val data = repository.getAll()
     val edited = MutableLiveData(empty)
-
-    fun setEditedPostToEmpty() {
-        edited.value = empty
-    }
 
     fun savePost() {
         edited.value?.let {
@@ -40,9 +36,9 @@ class PostViewModel : ViewModel() {
         edited.value = post
     }
 
-    fun changePostContent(content: String) {
+    fun changePostContent(content: String, isShare: Boolean) {
         val text = content.trim()
-        if (edited.value?.content == text) {
+        if (!isShare && edited.value?.content == text) {
             return
         }
         edited.value = edited.value?.copy(content = text)
