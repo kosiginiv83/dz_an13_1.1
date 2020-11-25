@@ -25,6 +25,19 @@ class PostRepositoryInMemoryImpl private constructor(): PostRepository {
 
     private var posts = listOf(
         Post(
+            id = 4,
+            author = "Нетология. Меняем карьеру через образование",
+            content = "начните и учитесь",
+            published = "вчера в 10:58",
+            likedByMe = false,
+            likesCount = 999,
+            sharesCount = 99,
+            viewsCount = 1_200,
+            imgLink = null,
+            videoPreviewLink = null,
+            videoLink = "https://www.youtube.com/watch?v=WhWc3b3KhnY",
+        ),
+        Post(
             id = 3,
             author = "Нетология. Меняем карьеру через образование",
             content = "учитесь и начните",
@@ -33,7 +46,9 @@ class PostRepositoryInMemoryImpl private constructor(): PostRepository {
             likesCount = 9_999,
             sharesCount = 995,
             viewsCount = 1_200_000,
-            imgLink = null
+            imgLink = null,
+            videoPreviewLink = R.drawable.vid_preview,
+            videoLink = "https://www.youtube.com/watch?v=WhWc3b3KhnY",
         ),
         Post(
             id = 2,
@@ -52,7 +67,9 @@ class PostRepositoryInMemoryImpl private constructor(): PostRepository {
             likesCount = 99,
             sharesCount = 95,
             viewsCount = 1_000,
-            imgLink = R.drawable.post_image_2
+            imgLink = R.drawable.post_image_2,
+            videoPreviewLink = null,
+            videoLink = null,
         ),
         Post(
             id = 1,
@@ -63,7 +80,9 @@ class PostRepositoryInMemoryImpl private constructor(): PostRepository {
             likesCount = 9_999,
             sharesCount = 995,
             viewsCount = 1_200_000,
-            imgLink = R.drawable.post_image
+            imgLink = R.drawable.post_image,
+            videoPreviewLink = null,
+            videoLink = null,
         ),
     )
 

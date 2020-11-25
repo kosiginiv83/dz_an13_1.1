@@ -13,15 +13,20 @@ class NewPostActivity : AppCompatActivity() {
         val binding = ActivityNewPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if (intent.resolveActivity(packageManager) != null
+                && !intent.getStringExtra(Intent.EXTRA_TEXT).isNullOrBlank()) {
+            binding.postEditText.setText(intent.getStringExtra(Intent.EXTRA_TEXT))
+        }
         binding.postEditText.requestFocus()
+
         binding.okBtn.setOnClickListener {
-            val intent = Intent()
+            val newIntent = Intent()
             if (binding.postEditText.text.isNullOrBlank()) {
-                setResult(Activity.RESULT_CANCELED, intent)
+                setResult(Activity.RESULT_CANCELED, newIntent)
             } else {
                 val content = binding.postEditText.text.toString()
-                intent.putExtra(Intent.EXTRA_TEXT, content)
-                setResult(Activity.RESULT_OK, intent)
+                newIntent.putExtra(Intent.EXTRA_TEXT, content)
+                setResult(Activity.RESULT_OK, newIntent)
             }
             finish()
         }

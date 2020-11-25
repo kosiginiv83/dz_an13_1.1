@@ -17,6 +17,8 @@ private val empty = Post(
     likesCount = 0,
     sharesCount = 0,
     viewsCount = 0,
+    videoLink = null,
+    videoPreviewLink = null,
 )
 
 
@@ -36,9 +38,9 @@ class PostViewModel : ViewModel() {
         edited.value = post
     }
 
-    fun changePostContent(content: String, isShare: Boolean) {
+    fun changePostContent(content: String) {
         val text = content.trim()
-        if (!isShare && edited.value?.content == text) {
+        if (edited.value?.content == text) {
             return
         }
         edited.value = edited.value?.copy(content = text)

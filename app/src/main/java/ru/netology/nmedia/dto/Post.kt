@@ -11,4 +11,6 @@ data class Post (
     val sharesCount: Int,
     val viewsCount: Int,
     val imgLink: Int?,
+    val videoPreviewLink: Int?,
+    val videoLink: String?,
 )
