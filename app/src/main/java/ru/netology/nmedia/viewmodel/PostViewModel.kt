@@ -17,17 +17,15 @@ private val empty = Post(
     likesCount = 0,
     sharesCount = 0,
     viewsCount = 0,
+    videoLink = null,
+    videoPreviewLink = null,
 )
 
 
 class PostViewModel : ViewModel() {
-    private val repository: PostRepository = PostRepositoryInMemoryImpl()
+    private val repository: PostRepository = PostRepositoryInMemoryImpl.instance
     val data = repository.getAll()
     val edited = MutableLiveData(empty)
-
-    fun setEditedPostToEmpty() {
-        edited.value = empty
-    }
 
     fun savePost() {
         edited.value?.let {
