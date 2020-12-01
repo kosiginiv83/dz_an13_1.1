@@ -32,6 +32,7 @@ class NewPostActivity : AppCompatActivity() {
         }
 
         binding.cancelBtn.setOnClickListener {
+            setResult(Activity.RESULT_CANCELED)
             finish()
         }
     }

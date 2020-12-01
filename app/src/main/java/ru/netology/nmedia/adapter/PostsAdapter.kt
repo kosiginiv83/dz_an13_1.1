@@ -44,7 +44,6 @@ class PostsAdapter(
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int, payloads: MutableList<Any>) {
-//        if (payloads.isEmpty()) super.onBindViewHolder(holder, position, payloads)
         if (payloads.isEmpty()) this.onBindViewHolder(holder, position)
         val post = getItem(position)
         payloads.forEach {
@@ -62,7 +61,6 @@ class PostsAdapter(
                 }
                 PostDiffCallback.PUBLISHED ->
                     holder.binding.published.text = post.published
-//                else -> super.onBindViewHolder(holder, position, payloads)
                 else -> this.onBindViewHolder(holder, position)
             }
         }
@@ -86,13 +84,13 @@ class PostViewHolder(
             btnLike.setOnClickListener { onInteractionListener.onLike(post) }
             btnShare.setOnClickListener { onInteractionListener.onShare(post) }
             postImg.setImageResource(post.imgLink ?: 0)
+
             if (post.videoLink != null) {
                 videoBtn.setImageResource(post.videoPreviewLink ?: R.drawable.youtube_img)
                 playBtn.visibility = if (post.videoPreviewLink != 0) View.VISIBLE else View.GONE
                 playBtn.setOnClickListener { onInteractionListener.onVideoOpen(post) }
                 videoBtn.setOnClickListener { onInteractionListener.onVideoOpen(post) }
             }
-
 
             menuButton.setOnClickListener {
                 PopupMenu(it.context, it).apply {
