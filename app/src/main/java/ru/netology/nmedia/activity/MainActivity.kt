@@ -9,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.ActivityMainBinding
@@ -25,11 +24,6 @@ class MainActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-
-//    override fun onStop() {
-//        super.onStop()
-//        Snackbar.make(binding.root, "MainActivity onStop event", Snackbar.LENGTH_LONG).show()
-//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,7 +100,6 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode != Activity.RESULT_OK) {
-//            Snackbar.make(binding.root, "Result not OK", Snackbar.LENGTH_LONG).show()
             return
         }
 
@@ -116,22 +109,17 @@ class MainActivity : AppCompatActivity() {
                     viewModel.changePostContent(it)
                     viewModel.savePost()
                 }
-//                Snackbar.make(binding.root, "newPostRequestCode", Snackbar.LENGTH_LONG).show()
             }
             postEditRequestCode -> {
                 data?.getStringExtra(Intent.EXTRA_TEXT)?.let {
                     viewModel.changePostContent(it)
                     viewModel.savePost()
                 }
-//                Snackbar.make(binding.root, "postEditRequestCode", Snackbar.LENGTH_LONG).show()
-                // На данный момент код для разных режимов идентичен.
-                // Нужен лишь для того, чтобы показать, что я понял для чего RequestCode
             }
         }
 
         binding.postsList.apply {
             layoutManager?.smoothScrollToPosition(this, RecyclerView.State(), 0)
-            // Перемотка идет до низа поста, а не до верха
         }
     }
 }

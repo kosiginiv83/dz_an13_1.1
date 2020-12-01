@@ -1,9 +1,12 @@
 package ru.netology.nmedia.repository
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import ru.netology.nmedia.R
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import ru.netology.nmedia.dto.Post
+import java.io.IOException
 
 
 interface PostRepository {
@@ -15,80 +18,58 @@ interface PostRepository {
 }
 
 
-class PostRepositoryInMemoryImpl private constructor(): PostRepository {
-    private object HOLDER {
-        val INSTANCE = PostRepositoryInMemoryImpl()
-    }
+class PostRepositoryFileImpl(
+    private val context: Context,
+): PostRepository {
     companion object {
-        val instance: PostRepositoryInMemoryImpl by lazy { HOLDER.INSTANCE }
+        @Volatile private var INSTANCE: PostRepositoryFileImpl? = null
+        fun getInstance(context: Context): PostRepositoryFileImpl =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: PostRepositoryFileImpl(context).also { INSTANCE = it }
+            }
     }
 
-    private var posts = listOf(
-        Post(
-            id = 4,
-            author = "Нетология. Меняем карьеру через образование",
-            content = "начните и учитесь",
-            published = "вчера в 10:58",
-            likedByMe = false,
-            likesCount = 999,
-            sharesCount = 99,
-            viewsCount = 1_200,
-            imgLink = null,
-            videoPreviewLink = null,
-            videoLink = "https://www.youtube.com/watch?v=WhWc3b3KhnY",
-        ),
-        Post(
-            id = 3,
-            author = "Нетология. Меняем карьеру через образование",
-            content = "учитесь и начните",
-            published = "вчера в 10:48",
-            likedByMe = false,
-            likesCount = 9_999,
-            sharesCount = 995,
-            viewsCount = 1_200_000,
-            imgLink = null,
-            videoPreviewLink = R.drawable.vid_preview,
-            videoLink = "https://www.youtube.com/watch?v=WhWc3b3KhnY",
-        ),
-        Post(
-            id = 2,
-            author = "Нетология. Меняем карьеру через образование",
-            content = "Работой на удалёнке уже никого не удивить: мифы о ноутбуке под пальмой и большом количестве свободного времени давно развеяны, ведь удалённая работа требует высокого уровня самоорганизованности и ответственности.\n" +
-                    "\n" +
-                    "Собрали подборку статей об удалёнке и фрилансе \uD83D\uDC47\n" +
-                    "\n" +
-                    "▪5 книг для тех, кто переходит на удалёнку → http://netolo.gy/fWN\n" +
-                    "▪Честно об удалённой работе: личный опыт → http://netolo.gy/fWM\n" +
-                    "▪Популярные ошибки фрилансеров, которые мешают получать заказы, и как их избежать → http://netolo.gy/fWO\n" +
-                    "▪О сложностях и проблемах, с которыми можно столкнуться на фрилансе → http://netolo.gy/fWP\n" +
-                    "▪Большая подборка статей об удалённой работе и цифровых профессиях → http://netolo.gy/fWQ",
-            published = "сегодня в 10:49",
-            likedByMe = false,
-            likesCount = 99,
-            sharesCount = 95,
-            viewsCount = 1_000,
-            imgLink = R.drawable.post_image_2,
-            videoPreviewLink = null,
-            videoLink = null,
-        ),
-        Post(
-            id = 1,
-            author = "Нетология. Меняем карьеру через образование",
-            content = "13 октября стартует бесплатный марафон «Три навыка, которые нужны каждому бизнесмену». Если ваш бизнес стабильно приносит прибыль, пора переходить к его масштабированию. Расскажем, как настроить процессы, эффективно управлять финансовым потоком и где найти деньги на развитие. Вас ждут три эксперта-предпринимателя и три темы, в которых они разбираются лучше всего: привлечение инвестиций, управленческий учёт, выстраивание бизнес-процессов. Регистрируйтесь и начните развивать своё дело прямо сейчас → http://netolo.gy/fUp",
-            published = "вчера в 10:24",
-            likedByMe = false,
-            likesCount = 9_999,
-            sharesCount = 995,
-            viewsCount = 1_200_000,
-            imgLink = R.drawable.post_image,
-            videoPreviewLink = null,
-            videoLink = null,
-        ),
-    )
-
+    private val gson = Gson()
+    private val type = TypeToken.getParameterized(List::class.java, Post::class.java).type
+    private val filename = "posts.json"
+    private val filenameAssets = "posts.json"
+    private var posts = emptyList<Post>()
     private val data = MutableLiveData(posts)
 
-    private var nextId = posts.size.toLong()
+    private val prefs = context.getSharedPreferences("repo", Context.MODE_PRIVATE)
+    private val key = "nextId"
+    private var nextId = 1L
+
+    init {
+        if (context.filesDir.resolve(filename).exists()) {
+            context.openFileInput(filename).bufferedReader().use {
+                posts = gson.fromJson(it, type)
+                data.value = posts
+            }
+        } else {
+            try {
+                context.assets.open(filenameAssets).bufferedReader().use {
+                    posts = gson.fromJson(it, type)
+                    data.value = posts
+                }
+            } catch (error: IOException) {
+                sync()
+            }
+        }
+        prefs.getLong(key, posts.maxOfOrNull{ it.id } ?: nextId)?.let {
+            nextId = it
+        }
+    }
+
+    private fun sync() {
+        context.openFileOutput(filename, Context.MODE_PRIVATE).bufferedWriter().use {
+            it.write(gson.toJson(posts))
+        }
+        with (prefs.edit()) {
+            putLong(key, nextId)
+            apply()
+        }
+    }
 
     override fun getAll(): LiveData<List<Post>> = data
 
@@ -102,6 +83,7 @@ class PostRepositoryInMemoryImpl private constructor(): PostRepository {
                 )
             ) + posts
             data.value = posts
+            sync()
             return
         }
 
@@ -109,6 +91,7 @@ class PostRepositoryInMemoryImpl private constructor(): PostRepository {
             if (it.id != post.id) it else it.copy(content = post.content)
         }
         data.value = posts
+        sync()
     }
 
     override fun likeById(id: Long) {
@@ -120,6 +103,7 @@ class PostRepositoryInMemoryImpl private constructor(): PostRepository {
             }
         }
         data.value = posts
+        sync()
     }
 
     override fun shareById(id: Long) {
@@ -127,10 +111,12 @@ class PostRepositoryInMemoryImpl private constructor(): PostRepository {
             if (it.id != id) it else it.copy(sharesCount = it.sharesCount + 1)
         }
         data.value = posts
+        sync()
     }
 
     override fun removeById(id: Long) {
         posts = posts.filter { it.id != id }
         data.value = posts
+        sync()
     }
 }
