@@ -56,7 +56,7 @@ class PostRepositoryFileImpl(
                 sync()
             }
         }
-        prefs.getLong(key, posts.maxOfOrNull{ it.id } ?: nextId)?.let {
+        prefs.getLong(key, posts.maxOfOrNull{ it.id } ?: nextId).let {
             nextId = it
         }
     }
