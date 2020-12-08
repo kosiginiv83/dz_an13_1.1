@@ -27,6 +27,7 @@ interface OnInteractionListener {
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
     fun onVideoOpen(post: Post) {}
+    fun onPostOpen(post: Post) {}
 }
 
 
@@ -83,6 +84,7 @@ class PostViewHolder(
             viewsCount.text = getFormattedNum(post.viewsCount)
             btnLike.setOnClickListener { onInteractionListener.onLike(post) }
             btnShare.setOnClickListener { onInteractionListener.onShare(post) }
+            cardPost.setOnClickListener { onInteractionListener.onPostOpen(post) }
             postImg.setImageResource(post.imgLink ?: 0)
 
             if (post.videoLink != null) {

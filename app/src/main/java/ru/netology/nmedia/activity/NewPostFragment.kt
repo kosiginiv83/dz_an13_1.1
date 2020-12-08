@@ -12,15 +12,19 @@ import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.utils.AndroidUtils
 import ru.netology.nmedia.utils.BooleanArg
+import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
 class NewPostFragment : Fragment() {
+    private var _binding: FragmentNewPostBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         var Bundle.textArg: String? by StringArg
-        var Bundle.isShared: Boolean by BooleanArg
+        var Bundle.isShared: Boolean? by BooleanArg
+        var Bundle.postId: Long? by LongArg
     }
 
     private val viewModel: PostViewModel by viewModels(
@@ -32,7 +36,7 @@ class NewPostFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentNewPostBinding.inflate(
+        _binding = FragmentNewPostBinding.inflate(
             inflater,
             container,
             false
@@ -46,7 +50,7 @@ class NewPostFragment : Fragment() {
 
         fun setEditableMode() {
             binding.postEditText.inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            AndroidUtils.hideKeyboard(binding.root)
+            AndroidUtils.hideKeyboard(requireView())
         }
 
         binding.okBtn.setOnClickListener {
@@ -67,5 +71,10 @@ class NewPostFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
