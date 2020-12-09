@@ -17,6 +17,8 @@ object AndroidUtils {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
 //        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
+}
+
 
 //    fun showKeyboard(view: View) {
 //        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -24,4 +26,15 @@ object AndroidUtils {
 //        view.post_edit_text.requestFocus()
 //        view.post_edit_text.showSoftInputOnFocus
 //    }
-}
+
+
+//        binding.postEditText.requestFocus()
+//        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+//        context?.getSystemService(Context.INPUT_METHOD_SERVICE)
+//            .soft(editText, InputMethodManager.SHOW_IMPLICIT)
+//        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+//        imm.showSoftInput(binding.postEditText, 0)
+//        activity?.window?.setSoftInputMode(SOFT_INPUT_STATE_VISIBLE)
+//        imm.showSoftInput(binding.postEditText, InputMethodManager.SHOW_FORCED)
+//        binding.postEditText.requestFocus()

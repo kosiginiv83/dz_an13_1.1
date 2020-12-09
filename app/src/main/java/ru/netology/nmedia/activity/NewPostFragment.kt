@@ -31,6 +31,7 @@ class NewPostFragment : Fragment() {
         ownerProducer = ::requireParentFragment
     )
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,8 +56,10 @@ class NewPostFragment : Fragment() {
 
         binding.okBtn.setOnClickListener {
             if (binding.postEditText.text.isNullOrBlank()) {
-                Snackbar.make(binding.root, "Empty text field is not allowed",
-                    Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    binding.root, "Empty text field is not allowed",
+                    Snackbar.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
             viewModel.changePostContent(binding.postEditText.text.toString())

@@ -1,7 +1,8 @@
 package ru.netology.nmedia.activity
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,58 +10,98 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_new_post.view.*
+import ru.netology.nmedia.R
+import ru.netology.nmedia.activity.NewPostFragment.Companion.isShared
 import ru.netology.nmedia.activity.NewPostFragment.Companion.postId
-import ru.netology.nmedia.databinding.FragmentNewPostBinding
+import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.adapter.OnInteractionListener
+import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentSinglePostBinding
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.utils.AndroidUtils
-import ru.netology.nmedia.utils.BooleanArg
-import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
 class SinglePostFragment : Fragment() {
+    private var _binding: FragmentSinglePostBinding? = null
+    private val binding get() = _binding!!
 
-    private val viewModel: PostViewModel by viewModels(
+    val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
+
+    private val singlePostAdapter by lazy {
+        PostsAdapter(object : OnInteractionListener {
+            override fun onShare(post: Post) {
+                viewModel.shareById(post.id)
+                Bundle().apply { isShared = true }
+                val intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, post.content)
+                    type = "text/plain"
+                }
+                val shareIntent =
+                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
+                startActivity(shareIntent)
+            }
+
+            override fun onEdit(post: Post) {
+                viewModel.editPost(post)
+                findNavController().navigate(
+                    R.id.action_singlePostFragment_to_newPostFragment,
+                    Bundle().apply {
+                        textArg = post.content
+                        isShared = false
+                    }
+                )
+            }
+
+            override fun onPostOpen(post: Post) {
+                return
+            }
+
+            override fun onVideoOpen(post: Post) {
+                Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink)).also(::startActivity)
+            }
+
+            override fun onLike(post: Post) {
+                viewModel.likeById(post.id)
+            }
+
+            override fun onRemove(post: Post) {
+                viewModel.removeById(post.id)
+                findNavController().navigateUp()
+            }
+        })
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentSinglePostBinding.inflate(
+        _binding = FragmentSinglePostBinding.inflate(
             inflater,
             container,
             false
         )
 
-//        binding.singlePostList.adapter = postsAdapter
-//        binding.singlePostList.layoutManager = LinearLayoutManager(context)
+        val postIdToView = arguments?.postId ?: findNavController().navigateUp()
+        val postToView = viewModel.data.value?.firstOrNull { it.id == postIdToView }
+        postToView?.let { viewModel.editPost(postToView) } ?: findNavController().navigateUp()
 
-        val postIdToView = arguments?.postId ?: -1L
-        if (postIdToView == -1L) findNavController().navigateUp()
-        val postToView = viewModel.data.value?.first { it.id == postIdToView }
-
-        if (postToView != null) {
-            viewModel.editPost(postToView)
-        } else findNavController().navigateUp()
-//        val singlePostList: List<Post> = listOf(postToView)
-
-        val postsAdapter = FeedFragment().postsAdapter
-
-        binding.singlePostList.adapter = postsAdapter
+        binding.singlePostList.adapter = singlePostAdapter
         binding.singlePostList.layoutManager = LinearLayoutManager(context)
 
         viewModel.edited.observe(viewLifecycleOwner) { post ->
-            postsAdapter.submitList(listOf(post))
+            singlePostAdapter.submitList(listOf(post))
         }
 
         return binding.root
     }
 
-    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
