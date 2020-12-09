@@ -56,14 +56,15 @@ class PostRepositoryFileImpl(
                 sync()
             }
         }
-        prefs.getLong(key, posts.maxOfOrNull{ it.id } ?: nextId)?.let {
+        prefs.getLong(key, posts.maxOfOrNull{ it.id } ?: nextId).let {
             nextId = it
         }
     }
 
     private fun sync() {
         context.openFileOutput(filename, Context.MODE_PRIVATE).bufferedWriter().use {
-            it.write(gson.toJson(posts))
+            it.write(gson.toJson(posts))  // Возможно, вместо posts нужно data.value
+//            it.write(gson.toJson(data.value))
         }
         with (prefs.edit()) {
             putLong(key, nextId)

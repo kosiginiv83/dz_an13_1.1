@@ -2,10 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_post"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
     android:padding="16dp"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.FeedFragment">
 
     <ImageView
         android:id="@+id/avatar"
@@ -44,23 +46,22 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/menu_button"
+        style="@style/Widget.AppTheme.PostMenu"
         android:layout_width="40dp"
         android:layout_height="40dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/Widget.AppTheme.PostMenu"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="avatar,published,menu_button"
-        />
+        app:constraint_referenced_ids="avatar,published,menu_button" />
 
     <TextView
         android:id="@+id/content"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -76,19 +77,21 @@
 
     <ImageView
         android:id="@+id/post_img"
+        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        app:layout_constraintTop_toBottomOf="@id/content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/content"
         tools:srcCompat="@drawable/post_image_2" />
 
     <ImageButton
         android:id="@+id/video_btn"
+        android:background="?android:selectableItemBackgroundBorderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -102,26 +105,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_img"
-        tools:srcCompat="@drawable/youtube_img"
-        />
+        tools:srcCompat="@drawable/youtube_img" />
 
     <ImageButton
         android:id="@+id/play_btn"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:background="?android:selectableItemBackground"
         android:backgroundTint="#00FFFFFF"
-        android:scaleType="centerInside"
         android:clickable="true"
+        android:scaleType="centerInside"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/video_btn"
         app:layout_constraintEnd_toEndOf="@id/video_btn"
         app:layout_constraintStart_toStartOf="@+id/video_btn"
         app:layout_constraintTop_toTopOf="@id/video_btn"
         app:srcCompat="@drawable/play_btn"
-        tools:visibility="visible"
-        android:visibility="gone"
-        style="@style/Widget.MaterialComponents.Button"
-        android:background="?android:selectableItemBackground"
-        />
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_img_bottom"
@@ -134,31 +135,29 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_like"
+        style="@style/Widget.AppTheme.LikeCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checkable="true"
+        android:contentDescription="Like"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barrier_img_bottom"
-        android:contentDescription="Like"
-        tools:icon="@drawable/ic_heart2"
         tools:checked="true"
-        tools:text="100"
-        style="@style/Widget.AppTheme.LikeCheckBox"
-        />
+        tools:icon="@drawable/ic_heart2"
+        tools:text="100" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_share"
+        style="@style/Widget.AppTheme.ShareButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checkable="false"
+        android:contentDescription="Share"
         app:layout_constraintBottom_toBottomOf="@+id/btn_like"
         app:layout_constraintStart_toEndOf="@+id/btn_like"
         app:layout_constraintTop_toTopOf="@+id/btn_like"
-        android:contentDescription="Share"
         tools:icon="@android:drawable/ic_menu_share"
-        tools:text="100"
-        style="@style/Widget.AppTheme.ShareButton"
-        />
+        tools:text="100" />
 
     <ImageView
         android:id="@+id/ic_eye"

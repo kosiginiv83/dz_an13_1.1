@@ -21,15 +21,6 @@ fun getFormattedNum(num: Int) : String = when(num) {
 }
 
 
-interface OnInteractionListener {
-    fun onLike(post: Post) {}
-    fun onShare(post: Post) {}
-    fun onEdit(post: Post) {}
-    fun onRemove(post: Post) {}
-    fun onVideoOpen(post: Post) {}
-}
-
-
 class PostsAdapter(
     private val onInteractionListener: OnInteractionListener
 ) : ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
@@ -83,6 +74,9 @@ class PostViewHolder(
             viewsCount.text = getFormattedNum(post.viewsCount)
             btnLike.setOnClickListener { onInteractionListener.onLike(post) }
             btnShare.setOnClickListener { onInteractionListener.onShare(post) }
+            cardPost.setOnClickListener { onInteractionListener.onPostOpen(post) }
+            content.setOnClickListener { onInteractionListener.onPostOpen(post) }
+            postImg.setOnClickListener { onInteractionListener.onPostOpen(post) }
             postImg.setImageResource(post.imgLink ?: 0)
 
             if (post.videoLink != null) {
