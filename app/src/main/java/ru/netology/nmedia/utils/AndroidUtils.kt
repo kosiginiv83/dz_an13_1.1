@@ -27,6 +27,8 @@ object AndroidUtils {
 //        view.post_edit_text.showSoftInputOnFocus
 //    }
 
+//inputMethodManager.toggleSoftInputFromWindow(binding.postEditText.applicationWindowToken,
+//InputMethodManager.SHOW_FORCED, 0)
 
 //        binding.postEditText.requestFocus()
 //        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
