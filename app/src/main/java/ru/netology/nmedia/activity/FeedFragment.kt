@@ -11,9 +11,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.netology.nmedia.R
-import ru.netology.nmedia.activity.NewPostFragment.Companion.isShared
 import ru.netology.nmedia.activity.NewPostFragment.Companion.postId
-import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.activity.NewPostFragment.Companion.content
+import ru.netology.nmedia.activity.NewPostFragment.Companion.mode
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
@@ -33,7 +33,7 @@ open class FeedFragment : Fragment() {
         PostsAdapter(object : OnInteractionListener {
             override fun onShare(post: Post) {
                 viewModel.shareById(post.id)
-                Bundle().apply { isShared = true }
+                Bundle().apply { mode = NewPostFragment.MODE.SHARE }
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND
                     putExtra(Intent.EXTRA_TEXT, post.content)
@@ -49,8 +49,8 @@ open class FeedFragment : Fragment() {
                 findNavController().navigate(
                     R.id.action_feedFragment_to_newPostFragment,
                     Bundle().apply {
-                        textArg = post.content
-                        isShared = false
+                        content = post.content
+                        mode = NewPostFragment.MODE.EDIT
                     }
                 )
             }
@@ -101,7 +101,7 @@ open class FeedFragment : Fragment() {
             findNavController().navigate(
                 R.id.action_feedFragment_to_newPostFragment,
                 Bundle().apply {
-                    isShared = false
+                    mode = NewPostFragment.MODE.NEW
                 }
             )
         }
