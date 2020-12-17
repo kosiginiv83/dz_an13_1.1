@@ -62,6 +62,7 @@ class NewPostFragment : Fragment() {
                 arguments?.content?.let(binding.postEditText::setText)
             }
             MODE.NEW -> {
+                viewModel.setEditedToEmpty()
                 try {
                     requireContext().openFileInput(filename).bufferedReader().use {
                         val post = gson.fromJson(it, Post::class.java)
