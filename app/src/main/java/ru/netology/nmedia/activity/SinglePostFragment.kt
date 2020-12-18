@@ -93,9 +93,15 @@ class SinglePostFragment : Fragment() {
         binding.singlePostList.adapter = singlePostAdapter
         binding.singlePostList.layoutManager = LinearLayoutManager(context)
 
-        viewModel.edited.observe(viewLifecycleOwner) { post ->
-            singlePostAdapter.submitList(listOf(post))
+        viewModel.edited.observeForever { post ->
+//            if (post.id == 0L) return@observeForever
+            singlePostAdapter.submitList(mutableListOf(post))
         }
+
+//        viewModel.edited.observe(viewLifecycleOwner) { post ->
+//            if (post.id == 0L) return@observe
+//            singlePostAdapter.submitList(mutableListOf(post))
+//        }
 
         return binding.root
     }
