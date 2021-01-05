@@ -7,6 +7,10 @@ import androidx.navigation.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.content
 import ru.netology.nmedia.activity.NewPostFragment.Companion.mode
+import android.util.Log
+
+
+val TAG: String = AppActivity::class.java.simpleName
 
 
 class AppActivity : AppCompatActivity(R.layout.activity_app) {

@@ -12,9 +12,9 @@ import ru.netology.nmedia.repository.PostRepositoryImpl
 private val empty = Post(
     id = 0,
     content = "",
-    author = "",
+    author = "Me",
     likedByMe = false,
-    published = "",
+    published = "Now",
     imgLink = null,
     likesCount = 0,
     sharesCount = 0,
@@ -36,6 +36,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     fun setEditedToEmpty() {
         edited.value = empty
     }
+
+    fun getPostById(id: Long) = repository.getPostById(id)
 
     fun savePost() {
         edited.value?.let {
