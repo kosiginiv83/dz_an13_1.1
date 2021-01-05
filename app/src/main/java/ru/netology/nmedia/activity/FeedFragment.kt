@@ -3,6 +3,7 @@ package ru.netology.nmedia.activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
-open class FeedFragment : Fragment() {
+class FeedFragment : Fragment() {
     private var _binding: FragmentFeedBinding? = null
     private val binding get() = _binding!!
 
@@ -94,6 +95,7 @@ open class FeedFragment : Fragment() {
         binding.postsList.layoutManager = LinearLayoutManager(context)
 
         viewModel.data.observe(viewLifecycleOwner) { posts ->
+            Log.d(TAG, "FeedFragment observe event")
             postsAdapter.submitList(posts)
         }
 
