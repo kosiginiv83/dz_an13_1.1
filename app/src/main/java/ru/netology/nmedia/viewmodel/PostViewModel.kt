@@ -39,6 +39,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getPostById(id: Long) = repository.getPostById(id)
 
+    fun insertPost(post: Post) {
+        repository.insertPost(post)
+    }
+
     fun savePost() {
         edited.value?.let {
             repository.save(it)

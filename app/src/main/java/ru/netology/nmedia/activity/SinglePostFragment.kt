@@ -99,7 +99,6 @@ class SinglePostFragment : Fragment() {
             }
         } ?: findNavController().navigateUp()
 
-
         return binding.root
     }
 

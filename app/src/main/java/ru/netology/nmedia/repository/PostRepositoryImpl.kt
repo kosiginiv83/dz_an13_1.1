@@ -39,4 +39,8 @@ class PostRepositoryImpl(
     override fun save(post: Post) {
         dao.save(PostEntity.fromDto(post))
     }
+
+    override fun insertPost(post: Post) {
+        dao.insert(PostEntity.fromDto(post))
+    }
 }
