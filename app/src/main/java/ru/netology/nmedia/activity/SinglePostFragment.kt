@@ -89,7 +89,6 @@ class SinglePostFragment : Fragment() {
             container,
             false
         )
-
         binding.singlePostList.adapter = singlePostAdapter
         binding.singlePostList.layoutManager = LinearLayoutManager(context)
 
