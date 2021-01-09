@@ -2,6 +2,7 @@ package ru.netology.nmedia.viewmodel
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -10,6 +11,8 @@ import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryImpl
+
+private val POST_VIEW_MODEL_TAG = PostViewModel::class.java.simpleName
 
 
 private val empty = Post(
@@ -80,6 +83,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
             posts.map { insertPost(it) }
         } catch (error: Exception) {
+            Log.e(POST_VIEW_MODEL_TAG, "getPostsFromAsset Exception", error)
             return
         }
     }
