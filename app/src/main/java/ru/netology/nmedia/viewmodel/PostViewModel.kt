@@ -72,19 +72,19 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     fun shareById(id: Long) = repository.shareById(id)
     fun removeById(id: Long) = repository.removeById(id)
 
-    fun getPostsFromAsset(context: Context) {
-        val gson = Gson()
-        val type = TypeToken.getParameterized(List::class.java, Post::class.java).type
-        val filenameAssets = "posts.json"
-        try {
-            var posts: List<Post>
-            context.assets.open(filenameAssets).bufferedReader().use {
-                posts = gson.fromJson(it, type)
-            }
-            posts.map { insertPost(it) }
-        } catch (error: Exception) {
-            Log.e(POST_VIEW_MODEL_TAG, "getPostsFromAsset Exception", error)
-            return
-        }
-    }
+//    fun getPostsFromAsset(context: Context) {
+//        val gson = Gson()
+//        val type = TypeToken.getParameterized(List::class.java, Post::class.java).type
+//        val filenameAssets = "posts.json"
+//        try {
+//            var posts: List<Post>
+//            context.assets.open(filenameAssets).bufferedReader().use {
+//                posts = gson.fromJson(it, type)
+//            }
+//            posts.map { insertPost(it) }
+//        } catch (error: Exception) {
+//            Log.e(POST_VIEW_MODEL_TAG, "getPostsFromAsset Exception", error)
+//            return
+//        }
+//    }
 }

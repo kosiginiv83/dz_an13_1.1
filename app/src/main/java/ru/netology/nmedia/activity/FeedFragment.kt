@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -31,10 +32,10 @@ class FeedFragment : Fragment() {
         ownerProducer = ::requireParentFragment
     )
 
-    private val APP_PREFS_FIRST_LAUNCH = "isFirstLaunch"
-    private val prefs by lazy {
-        requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE)
-    }
+//    private val APP_PREFS_FIRST_LAUNCH = "isFirstLaunch"
+//    private val prefs by lazy {
+//        requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE)
+//    }
 
 
     private val postsAdapter by lazy {
@@ -105,15 +106,15 @@ class FeedFragment : Fragment() {
             postsAdapter.submitList(posts)
         }
 
-        prefs.getBoolean(APP_PREFS_FIRST_LAUNCH, true).let { isFirstLaunch ->
-            if (isFirstLaunch) {
-                viewModel.getPostsFromAsset(requireContext())
-                with (prefs.edit()) {
-                    putBoolean(APP_PREFS_FIRST_LAUNCH, false)
-                    apply()
-                }
-            }
-        }
+//        prefs.getBoolean(APP_PREFS_FIRST_LAUNCH, true).let { isFirstLaunch ->
+//            if (isFirstLaunch) {
+//                viewModel.getPostsFromAsset(requireContext())
+//                with (prefs.edit()) {
+//                    putBoolean(APP_PREFS_FIRST_LAUNCH, false)
+//                    apply()
+//                }
+//            }
+//        }
 
         binding.addPostFab.setOnClickListener {
             findNavController().navigate(

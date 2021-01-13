@@ -105,6 +105,11 @@ class NewPostFragment : Fragment() {
             findNavController().navigateUp()
         }
 
+//        viewModel.postCreated.observe(viewLifecycleOwner) {
+//            viewModel.loadPosts()
+//            findNavController().navigateUp()
+//        } // TODO("?")
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             requireContext().openFileOutput(filename, Context.MODE_PRIVATE).bufferedWriter().use {
                 val post = viewModel.getEmpty().copy(content = binding.postEditText.text.toString())
