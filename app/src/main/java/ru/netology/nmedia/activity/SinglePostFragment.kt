@@ -12,7 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.card_post.*
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.postId
 import ru.netology.nmedia.activity.NewPostFragment.Companion.content
@@ -35,18 +34,18 @@ class SinglePostFragment : Fragment() {
 
     private val singlePostAdapter by lazy {
         PostsAdapter(object : OnInteractionListener {
-            override fun onShare(post: Post) {
-                viewModel.shareById(post.id)
-                Bundle().apply { mode = NewPostFragment.MODE.SHARE }
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, post.content)
-                    type = "text/plain"
-                }
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                startActivity(shareIntent)
-            }
+//            override fun onShare(post: Post) {
+//                viewModel.shareById(post.id)
+//                Bundle().apply { mode = NewPostFragment.MODE.SHARE }
+//                val intent = Intent().apply {
+//                    action = Intent.ACTION_SEND
+//                    putExtra(Intent.EXTRA_TEXT, post.content)
+//                    type = "text/plain"
+//                }
+//                val shareIntent =
+//                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
+//                startActivity(shareIntent)
+//            }
 
             override fun onEdit(post: Post) {
                 viewModel.editPost(post)
@@ -92,11 +91,11 @@ class SinglePostFragment : Fragment() {
         binding.singlePostList.adapter = singlePostAdapter
         binding.singlePostList.layoutManager = LinearLayoutManager(context)
 
-        arguments?.postId?.run {
-            viewModel.getPostById(this).observe(viewLifecycleOwner) { posts ->
-                singlePostAdapter.submitList(posts)
-            }
-        } ?: findNavController().navigateUp()
+//        arguments?.postId?.run {
+//            viewModel.getPostById(this).observe(viewLifecycleOwner) { posts ->
+//                singlePostAdapter.submitList(posts)
+//            }
+//        } ?: findNavController().navigateUp()
 
         return binding.root
     }

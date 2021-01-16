@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.card_post.view.*
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.*
@@ -105,10 +104,10 @@ class NewPostFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-//        viewModel.postCreated.observe(viewLifecycleOwner) {
-//            viewModel.loadPosts()
-//            findNavController().navigateUp()
-//        } // TODO("?")
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            viewModel.loadPosts()
+            findNavController().navigateUp()
+        }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             requireContext().openFileOutput(filename, Context.MODE_PRIVATE).bufferedWriter().use {

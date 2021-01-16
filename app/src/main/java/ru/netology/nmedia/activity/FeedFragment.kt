@@ -40,18 +40,18 @@ class FeedFragment : Fragment() {
 
     private val postsAdapter by lazy {
         PostsAdapter(object : OnInteractionListener {
-            override fun onShare(post: Post) {
-                viewModel.shareById(post.id)
-                Bundle().apply { mode = NewPostFragment.MODE.SHARE }
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, post.content)
-                    type = "text/plain"
-                }
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                startActivity(shareIntent)
-            }
+//            override fun onShare(post: Post) {
+//                viewModel.shareById(post.id)
+//                Bundle().apply { mode = NewPostFragment.MODE.SHARE }
+//                val intent = Intent().apply {
+//                    action = Intent.ACTION_SEND
+//                    putExtra(Intent.EXTRA_TEXT, post.content)
+//                    type = "text/plain"
+//                }
+//                val shareIntent =
+//                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
+//                startActivity(shareIntent)
+//            }
 
             override fun onEdit(post: Post) {
                 viewModel.editPost(post)
@@ -102,8 +102,15 @@ class FeedFragment : Fragment() {
         binding.postsList.adapter = postsAdapter
         binding.postsList.layoutManager = LinearLayoutManager(context)
 
-        viewModel.data.observe(viewLifecycleOwner) { posts ->
-            postsAdapter.submitList(posts)
+        viewModel.data.observe(viewLifecycleOwner) { state ->
+            postsAdapter.submitList(state.posts)
+            binding.progressBar.isVisible = state.loading
+            binding.errorGroup.isVisible = state.error
+            binding.emptyText.isVisible = state.empty
+        }
+
+        binding.retryButton.setOnClickListener {
+            viewModel.loadPosts()
         }
 
 //        prefs.getBoolean(APP_PREFS_FIRST_LAUNCH, true).let { isFirstLaunch ->
@@ -123,6 +130,11 @@ class FeedFragment : Fragment() {
                     mode = NewPostFragment.MODE.NEW
                 }
             )
+        }
+
+        binding.swipeRefreshWidget.setOnRefreshListener {
+            binding.swipeRefreshWidget.isRefreshing = false
+            viewModel.loadPosts()
         }
 
         return binding.root
