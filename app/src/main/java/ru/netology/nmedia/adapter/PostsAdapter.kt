@@ -42,11 +42,11 @@ class PostsAdapter(
                 PostDiffCallback.LIKED_BY_ME ->
                     holder.binding.btnLike.isChecked = post.likedByMe
                 PostDiffCallback.LIKES_COUNT ->
-                    holder.binding.btnLike.text = getFormattedNum(post.likesCount)
-                PostDiffCallback.SHARES_COUNT ->
-                    holder.binding.btnShare.text = getFormattedNum(post.sharesCount)
-                PostDiffCallback.VIEWS_COUNT ->
-                    holder.binding.viewsCount.text = getFormattedNum(post.viewsCount)
+                    holder.binding.btnLike.text = getFormattedNum(post.likes)
+//                PostDiffCallback.SHARES_COUNT ->
+//                    holder.binding.btnShare.text = getFormattedNum(post.sharesCount)
+//                PostDiffCallback.VIEWS_COUNT ->
+//                    holder.binding.viewsCount.text = getFormattedNum(post.viewsCount)
                 PostDiffCallback.CONTENT -> {
                     holder.binding.content.text = post.content
                 }
@@ -69,22 +69,22 @@ class PostViewHolder(
             published.text = post.published
             content.text = post.content
             btnLike.isChecked = post.likedByMe
-            btnLike.text = getFormattedNum(post.likesCount)
-            btnShare.text = getFormattedNum(post.sharesCount)
-            viewsCount.text = getFormattedNum(post.viewsCount)
+            btnLike.text = getFormattedNum(post.likes)
+//            btnShare.text = getFormattedNum(post.sharesCount)
+//            viewsCount.text = getFormattedNum(post.viewsCount)
             btnLike.setOnClickListener { onInteractionListener.onLike(post) }
             btnShare.setOnClickListener { onInteractionListener.onShare(post) }
             cardPost.setOnClickListener { onInteractionListener.onPostOpen(post) }
             content.setOnClickListener { onInteractionListener.onPostOpen(post) }
             postImg.setOnClickListener { onInteractionListener.onPostOpen(post) }
-            postImg.setImageResource(post.imgLink ?: 0)
+//            postImg.setImageResource(post.imgLink ?: 0)
 
-            if (post.videoLink != null) {
-                videoBtn.setImageResource(post.videoPreviewLink ?: R.drawable.youtube_img)
-                playBtn.visibility = if (post.videoPreviewLink != 0) View.VISIBLE else View.GONE
-                playBtn.setOnClickListener { onInteractionListener.onVideoOpen(post) }
-                videoBtn.setOnClickListener { onInteractionListener.onVideoOpen(post) }
-            }
+//            if (post.videoLink != null) {
+//                videoBtn.setImageResource(post.videoPreviewLink ?: R.drawable.youtube_img)
+//                playBtn.visibility = if (post.videoPreviewLink != 0) View.VISIBLE else View.GONE
+//                playBtn.setOnClickListener { onInteractionListener.onVideoOpen(post) }
+//                videoBtn.setOnClickListener { onInteractionListener.onVideoOpen(post) }
+//            }
 
             menuButton.setOnClickListener {
                 PopupMenu(it.context, it).apply {
@@ -130,9 +130,9 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     override fun getChangePayload(oldItem: Post, newItem: Post): Any? {
         val set = mutableSetOf<String>()
         if (newItem.likedByMe != oldItem.likedByMe) set.add(LIKED_BY_ME)
-        if (newItem.likesCount != oldItem.likesCount) set.add(LIKES_COUNT)
-        if (newItem.sharesCount != oldItem.sharesCount) set.add(SHARES_COUNT)
-        if (newItem.viewsCount != oldItem.viewsCount) set.add(VIEWS_COUNT)
+        if (newItem.likes != oldItem.likes) set.add(LIKES_COUNT)
+//        if (newItem.sharesCount != oldItem.sharesCount) set.add(SHARES_COUNT)
+//        if (newItem.viewsCount != oldItem.viewsCount) set.add(VIEWS_COUNT)
         if (newItem.published != oldItem.published) set.add(PUBLISHED)
         if (newItem.content != oldItem.content) set.add(CONTENT)
         return set

@@ -62,9 +62,9 @@ class SinglePostFragment : Fragment() {
                 return
             }
 
-            override fun onVideoOpen(post: Post) {
-                Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink)).also(::startActivity)
-            }
+//            override fun onVideoOpen(post: Post) {
+//                Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink)).also(::startActivity)
+//            }
 
             override fun onLike(post: Post) {
                 viewModel.likeById(post.id)

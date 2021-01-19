@@ -1,10 +1,6 @@
 package ru.netology.nmedia.activity
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +10,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.netology.nmedia.R
-import ru.netology.nmedia.activity.NewPostFragment.Companion.postId
 import ru.netology.nmedia.activity.NewPostFragment.Companion.content
 import ru.netology.nmedia.activity.NewPostFragment.Companion.mode
+import ru.netology.nmedia.activity.NewPostFragment.Companion.postId
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
@@ -73,9 +69,9 @@ class FeedFragment : Fragment() {
                 )
             }
 
-            override fun onVideoOpen(post: Post) {
-                Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink)).also(::startActivity)
-            }
+//            override fun onVideoOpen(post: Post) {
+//                Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink)).also(::startActivity)
+//            }
 
             override fun onLike(post: Post) {
                 viewModel.likeById(post.id)
@@ -132,9 +128,12 @@ class FeedFragment : Fragment() {
             )
         }
 
-        binding.swipeRefreshWidget.setOnRefreshListener {
-            binding.swipeRefreshWidget.isRefreshing = false
-            viewModel.loadPosts()
+        binding.swipeRefreshWidget.apply {
+//            setProgressViewEndTarget(false, 0) // Убирает спиннер
+            setOnRefreshListener {
+                viewModel.loadPosts()
+                isRefreshing = false
+            }
         }
 
         return binding.root

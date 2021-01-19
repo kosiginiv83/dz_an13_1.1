@@ -7,7 +7,6 @@ import androidx.lifecycle.*
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.*
@@ -20,28 +19,24 @@ private val POST_VIEW_MODEL_TAG = PostViewModel::class.java.simpleName
 
 private val empty = Post(
     id = 0,
-    content = "",
     author = "Me",
+    content = "",
+    published = "0",
     likedByMe = false,
-    published = "Now",
-    imgLink = null,
-    likesCount = 0,
-    sharesCount = 0,
-    viewsCount = 0,
-    videoLink = null,
-    videoPreviewLink = null,
+    likes = 0,
+//    sharesCount = 0,
 )
 
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PostRepository = PostRepositoryImpl()
-    private val _data = MutableLiveData(FeedModel())
-    val data: LiveData<FeedModel>
-        get() = _data
     val edited = MutableLiveData(empty)
+
+    private val _data = MutableLiveData(FeedModel())
+    val data: LiveData<FeedModel> get() = _data
+
     private val _postCreated = SingleLiveEvent<Unit>()
-    val postCreated: LiveData<Unit>
-        get() = _postCreated
+    val postCreated: LiveData<Unit> get() = _postCreated
 
     init {
         loadPosts()
@@ -66,7 +61,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = empty
     }
 
-//    fun getPostById(id: Long) = repository.getPostById(id)
+    fun getPostById(id: Long) = repository.getPostById(id)
 
 //    fun insertPost(post: Post) {
 //        repository.insertPost(post)
