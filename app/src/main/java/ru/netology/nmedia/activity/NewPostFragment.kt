@@ -18,6 +18,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.*
 import ru.netology.nmedia.viewmodel.PostViewModel
 import java.io.IOException
+import kotlin.concurrent.thread
 
 
 class NewPostFragment : Fragment() {
@@ -61,7 +62,7 @@ class NewPostFragment : Fragment() {
                 arguments?.content?.let(binding.postEditText::setText)
             }
             MODE.NEW -> {
-                viewModel.setEditedToEmpty()
+                viewModel.setEditedToEmpty() // TODO("?")
                 try {
                     requireContext().openFileInput(filename).bufferedReader().use {
                         val post = gson.fromJson(it, Post::class.java)
@@ -82,6 +83,7 @@ class NewPostFragment : Fragment() {
                         it.write(gson.toJson(""))
                     }
             }
+//            viewModel.setEditedToEmpty() // TODO("?")
             AndroidUtils.hideKeyboard(requireView())
         }
 
@@ -97,6 +99,13 @@ class NewPostFragment : Fragment() {
             viewModel.savePost()
             setEditableMode()
             findNavController().navigateUp()
+            thread.sleep().also {
+                Snackbar.make(
+                    binding.root,
+                    "Changes will be displayed after processing by the remote service",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
         }
 
         binding.cancelBtn.setOnClickListener {
@@ -104,10 +113,7 @@ class NewPostFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        viewModel.postCreated.observe(viewLifecycleOwner) {
-            viewModel.loadPosts()
-            findNavController().navigateUp()
-        }
+
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             requireContext().openFileOutput(filename, Context.MODE_PRIVATE).bufferedWriter().use {

@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.content
 import ru.netology.nmedia.activity.NewPostFragment.Companion.mode
@@ -18,6 +20,7 @@ import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.viewmodel.PostViewModel
+import kotlin.concurrent.thread
 
 
 class FeedFragment : Fragment() {
@@ -103,6 +106,8 @@ class FeedFragment : Fragment() {
             binding.progressBar.isVisible = state.loading
             binding.errorGroup.isVisible = state.error
             binding.emptyText.isVisible = state.empty
+            binding.addPostFab.isVisible = state.idle
+            binding.swipeRefreshWidget.isRefreshing = false
         }
 
         binding.retryButton.setOnClickListener {
@@ -128,11 +133,15 @@ class FeedFragment : Fragment() {
             )
         }
 
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            viewModel.loadPosts()
+//            binding.postsList.scrollToPosition(0)
+            binding.postsList.smoothScrollToPosition(0)
+        }
+
         binding.swipeRefreshWidget.apply {
-//            setProgressViewEndTarget(false, 0) // Убирает спиннер
             setOnRefreshListener {
                 viewModel.loadPosts()
-                isRefreshing = false
             }
         }
 

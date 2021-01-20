@@ -44,10 +44,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loadPosts() {
         thread {
-            _data.postValue(FeedModel(loading = true))
+            if (_data.value?.posts?.isEmpty() ?: true) _data.postValue(FeedModel(loading = true))
             try {
                 val posts = repository.getAll()
-                FeedModel(posts = posts, empty = posts.isEmpty())
+                FeedModel(posts = posts, empty = posts.isEmpty(), idle = true)
             } catch (e: IOException) {
                 FeedModel(error = true)
             }.also(_data::postValue)
