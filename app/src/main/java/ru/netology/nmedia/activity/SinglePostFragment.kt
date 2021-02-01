@@ -1,27 +1,24 @@
 package ru.netology.nmedia.activity
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.card_post.*
 import ru.netology.nmedia.R
-import ru.netology.nmedia.activity.NewPostFragment.Companion.postId
 import ru.netology.nmedia.activity.NewPostFragment.Companion.content
 import ru.netology.nmedia.activity.NewPostFragment.Companion.mode
+import ru.netology.nmedia.activity.NewPostFragment.Companion.postId
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
-import ru.netology.nmedia.adapter.getFormattedNum
 import ru.netology.nmedia.databinding.FragmentSinglePostBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
@@ -35,40 +32,30 @@ class SinglePostFragment : Fragment() {
 
     private val singlePostAdapter by lazy {
         PostsAdapter(object : OnInteractionListener {
-            override fun onShare(post: Post) {
-                viewModel.shareById(post.id)
-                Bundle().apply { mode = NewPostFragment.MODE.SHARE }
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, post.content)
-                    type = "text/plain"
-                }
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                startActivity(shareIntent)
-            }
-
             override fun onEdit(post: Post) {
-                viewModel.editPost(post)
-                findNavController().navigate(
-                    R.id.action_singlePostFragment_to_newPostFragment,
-                    Bundle().apply {
-                        content = post.content
-                        mode = NewPostFragment.MODE.EDIT
-                    }
-                )
+                if (!viewModel.isContentChangedPending.value?.contains(post.id)!!) {
+                    viewModel.editPost(post)
+                    findNavController().navigate(
+                        R.id.action_singlePostFragment_to_newPostFragment,
+                        Bundle().apply {
+                            content = post.content
+                            mode = NewPostFragment.MODE.EDIT
+                        }
+                    )
+                }
             }
 
             override fun onPostOpen(post: Post) {
                 return
             }
 
-            override fun onVideoOpen(post: Post) {
-                Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink)).also(::startActivity)
-            }
-
             override fun onLike(post: Post) {
-                viewModel.likeById(post.id)
+                if (!viewModel.isLikeUnlikePending.value?.contains(post.id)!!) {
+                    binding.progressBar.isVisible = true
+                    viewModel.isLikeUnlikePending.value?.add(post.id)
+                    viewModel.editPost(post)
+                    viewModel.likeUnlike(post)
+                }
             }
 
             override fun onRemove(post: Post) {
@@ -91,15 +78,38 @@ class SinglePostFragment : Fragment() {
         )
         binding.singlePostList.adapter = singlePostAdapter
         binding.singlePostList.layoutManager = LinearLayoutManager(context)
+        viewModel.setSinglePostToEmpty()
 
-        arguments?.postId?.run {
-            viewModel.getPostById(this).observe(viewLifecycleOwner) { posts ->
-                singlePostAdapter.submitList(posts)
+        var postId: Long = -1
+        arguments?.postId?.let { postId = it } ?: findNavController().navigateUp()
+        viewModel.getPostById(postId)
+
+        viewModel.singlePost.observe(viewLifecycleOwner) {
+            singlePostAdapter.submitList(it.posts)
+            binding.progressBar.isVisible = it.refreshing
+            binding.errorGroup.isVisible = it.error
+        }
+
+        binding.retryButton.setOnClickListener {
+            viewModel.getPostById(postId)
+        }
+
+        binding.swipeRefreshWidget.apply {
+            setProgressViewEndTarget(false, 0)
+            isRefreshing = false
+            setOnRefreshListener {
+                binding.progressBar.isVisible = true
+                viewModel.getPostById(postId)
             }
-        } ?: findNavController().navigateUp()
+        }
+
+        viewModel.singlePostUpdated.observe(viewLifecycleOwner) {
+            viewModel.getPostById(postId)
+        }
 
         return binding.root
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

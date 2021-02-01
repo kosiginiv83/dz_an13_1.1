@@ -3,6 +3,7 @@ package ru.netology.nmedia.activity
 import android.content.Context
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +13,11 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.card_post.view.*
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.utils.*
 import ru.netology.nmedia.viewmodel.PostViewModel
-import java.io.IOException
 
 
 class NewPostFragment : Fragment() {
@@ -68,7 +67,7 @@ class NewPostFragment : Fragment() {
                         val post = gson.fromJson(it, Post::class.java)
                         binding.postEditText.setText(post.content)
                     }
-                } catch (error: Exception) {
+                } catch (e: Exception) {
                     binding.postEditText.setText("")
                 }
             }
@@ -86,6 +85,7 @@ class NewPostFragment : Fragment() {
             AndroidUtils.hideKeyboard(requireView())
         }
 
+
         binding.okBtn.setOnClickListener {
             if (binding.postEditText.text.isNullOrBlank()) {
                 Snackbar.make(
@@ -94,16 +94,21 @@ class NewPostFragment : Fragment() {
                 ).show()
                 return@setOnClickListener
             }
+
+            viewModel.edited.value?.id?.let { viewModel.isContentChangedPending.value?.add(it) }
             viewModel.changePostContent(binding.postEditText.text.toString())
             viewModel.savePost()
+
             setEditableMode()
             findNavController().navigateUp()
         }
+
 
         binding.cancelBtn.setOnClickListener {
             setEditableMode()
             findNavController().navigateUp()
         }
+
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             requireContext().openFileOutput(filename, Context.MODE_PRIVATE).bufferedWriter().use {
