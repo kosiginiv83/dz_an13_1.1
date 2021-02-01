@@ -1,12 +1,10 @@
 package ru.netology.nmedia.viewmodel
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import ru.netology.nmedia.activity.TAG
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.*
@@ -24,7 +22,6 @@ private val empty = Post(
     published = "0",
     likedByMe = false,
     likes = 0,
-//    sharesCount = 0,
 )
 
 
@@ -35,18 +32,60 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val _data = MutableLiveData(FeedModel())
     val data: LiveData<FeedModel> get() = _data
 
+    private val _singlePost = MutableLiveData(FeedModel())
+    val singlePost: LiveData<FeedModel> get() = _singlePost
+
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit> get() = _postCreated
 
+    private val _singlePostUpdated = SingleLiveEvent<Unit>()
+    val singlePostUpdated: LiveData<Unit> get() = _singlePostUpdated
+
+    val isLikeUnlikePending: MutableLiveData<MutableList<Long>> by lazy { MutableLiveData() }
+    val isContentChangedPending: MutableLiveData<MutableList<Long>> by lazy { MutableLiveData() }
+
     init {
+        isLikeUnlikePending.value = mutableListOf()
+        isContentChangedPending.value = mutableListOf()
         loadPosts()
     }
 
+
+    fun editPost(post: Post) {
+        edited.value = post
+    }
+
+    fun getEmpty() = empty
+
+    fun setEditedToEmpty() {
+        edited.value = empty
+    }
+
+    fun setSinglePostToEmpty() {
+        _singlePost.value = FeedModel(emptyList(), refreshing = true)
+    }
+
+
+    private fun removeIdFromList() {
+        if ( isLikeUnlikePending.value?.isNotEmpty()!! ) {
+            val likedUnlikedPostIds = isLikeUnlikePending.value
+                ?.takeWhile { it != edited.value?.id }
+            isLikeUnlikePending.postValue(likedUnlikedPostIds?.toMutableList())
+        }
+
+        if ( isContentChangedPending.value?.isNotEmpty()!! ) {
+            val contentChangedPostIds = isContentChangedPending.value
+                ?.takeWhile { it != edited.value?.id }
+            isContentChangedPending.postValue(contentChangedPostIds?.toMutableList())
+        }
+    }
+
+
     fun loadPosts() {
         thread {
-            if (_data.value?.posts?.isEmpty() ?: true) _data.postValue(FeedModel(loading = true))
             try {
                 val posts = repository.getAll()
+                removeIdFromList()
                 FeedModel(posts = posts, empty = posts.isEmpty(), idle = true)
             } catch (e: IOException) {
                 FeedModel(error = true)
@@ -55,31 +94,36 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    fun getEmpty() = empty
-
-    fun setEditedToEmpty() {
-        edited.value = empty
+    fun getPostById(id: Long) {
+        thread {
+            try {
+                val post = repository.getPostById(id)
+                removeIdFromList()
+                FeedModel(posts = listOf(post))
+            } catch (e: IOException) {
+                FeedModel(error = true)
+            }.also(_singlePost::postValue)
+        }
     }
 
-    fun getPostById(id: Long) = repository.getPostById(id)
-
-//    fun insertPost(post: Post) {
-//        repository.insertPost(post)
-//    }
 
     fun savePost() {
         edited.value?.let {
             thread {
-                repository.save(it)
-                _postCreated.postValue(Unit)
+                try {
+                    repository.save(it)
+                    _postCreated.postValue(Unit)
+                    _singlePostUpdated.postValue(Unit)
+                } catch (e: IOException) {
+                    FeedModel(error = true)
+                } finally {
+                    isContentChangedPending.value?.remove(it.id)
+                }
             }
         }
         edited.value = empty
     }
 
-    fun editPost(post: Post) {
-        edited.value = post
-    }
 
     fun changePostContent(content: String) {
         val text = content.trim()
@@ -89,14 +133,23 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = edited.value?.copy(content = text)
     }
 
-//    fun likeById(id: Long) = repository.likeById(id)
-    fun likeById(id: Long) {
-        thread { repository.likeById(id) }
+
+    fun likeUnlike(post: Post) {
+        edited.value = edited.value?.copy(likedByMe = !post.likedByMe)
+        thread {
+            try {
+                repository.likeUnlike(post)
+                _postCreated.postValue(Unit)
+                _singlePostUpdated.postValue(Unit)
+            } catch (e: IOException) {
+                FeedModel(error = true)
+            } finally {
+                isLikeUnlikePending.value?.remove(post.id)
+            }
+        }.also { edited.value = empty }
     }
 
-//    fun shareById(id: Long) = repository.shareById(id)
 
-//    fun removeById(id: Long) = repository.removeById(id)
     fun removeById(id: Long) {
         thread {
             val old = _data.value?.posts.orEmpty()
@@ -112,19 +165,4 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-//    fun getPostsFromAsset(context: Context) {
-//        val gson = Gson()
-//        val type = TypeToken.getParameterized(List::class.java, Post::class.java).type
-//        val filenameAssets = "posts.json"
-//        try {
-//            var posts: List<Post>
-//            context.assets.open(filenameAssets).bufferedReader().use {
-//                posts = gson.fromJson(it, type)
-//            }
-//            posts.map { insertPost(it) }
-//        } catch (error: Exception) {
-//            Log.e(POST_VIEW_MODEL_TAG, "getPostsFromAsset Exception", error)
-//            return
-//        }
-//    }
 }

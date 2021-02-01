@@ -3,6 +3,7 @@ package ru.netology.nmedia.activity
 import android.content.Context
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +13,11 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.utils.*
 import ru.netology.nmedia.viewmodel.PostViewModel
-import java.io.IOException
-import kotlin.concurrent.thread
 
 
 class NewPostFragment : Fragment() {
@@ -62,13 +61,13 @@ class NewPostFragment : Fragment() {
                 arguments?.content?.let(binding.postEditText::setText)
             }
             MODE.NEW -> {
-                viewModel.setEditedToEmpty() // TODO("?")
+                viewModel.setEditedToEmpty()
                 try {
                     requireContext().openFileInput(filename).bufferedReader().use {
                         val post = gson.fromJson(it, Post::class.java)
                         binding.postEditText.setText(post.content)
                     }
-                } catch (error: Exception) {
+                } catch (e: Exception) {
                     binding.postEditText.setText("")
                 }
             }
@@ -83,9 +82,9 @@ class NewPostFragment : Fragment() {
                         it.write(gson.toJson(""))
                     }
             }
-//            viewModel.setEditedToEmpty() // TODO("?")
             AndroidUtils.hideKeyboard(requireView())
         }
+
 
         binding.okBtn.setOnClickListener {
             if (binding.postEditText.text.isNullOrBlank()) {
@@ -95,24 +94,20 @@ class NewPostFragment : Fragment() {
                 ).show()
                 return@setOnClickListener
             }
+
+            viewModel.edited.value?.id?.let { viewModel.isContentChangedPending.value?.add(it) }
             viewModel.changePostContent(binding.postEditText.text.toString())
             viewModel.savePost()
+
             setEditableMode()
             findNavController().navigateUp()
-            thread.sleep().also {
-                Snackbar.make(
-                    binding.root,
-                    "Changes will be displayed after processing by the remote service",
-                    Snackbar.LENGTH_LONG
-                ).show()
-            }
         }
+
 
         binding.cancelBtn.setOnClickListener {
             setEditableMode()
             findNavController().navigateUp()
         }
-
 
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {

@@ -18,7 +18,8 @@ class PostRepositoryImpl : PostRepository {
         .connectTimeout(30, TimeUnit.SECONDS)
         .build()
     private val gson = Gson()
-    private val typeToken = object : TypeToken<List<Post>>() {}
+    private val typeTokenList = object : TypeToken<List<Post>>() {}
+    private val typeTokenPost = object : TypeToken<Post>() {}
 
     companion object {
         private const val BASE_URL = "http://10.0.2.2:9999" // AVD
@@ -35,11 +36,11 @@ class PostRepositoryImpl : PostRepository {
         return client.newCall(request)
             .execute()
             .use { it.body?.string() }
-            .let { gson.fromJson(it, typeToken.type) }
+            .let { gson.fromJson(it, typeTokenList.type) }
     }
 
 
-    override fun getPostById(id: Long): List<Post> {
+    override fun getPostById(id: Long): Post {
         val request: Request = Request.Builder()
             .url("${BASE_URL}/api/slow/posts/$id")
             .build()
@@ -47,23 +48,28 @@ class PostRepositoryImpl : PostRepository {
         return client.newCall(request)
             .execute()
             .use { it.body?.string() }
-            .let { gson.fromJson(it, typeToken.type) }
+            .let { gson.fromJson(it, typeTokenPost.type) }
     }
 
 
-    override fun likeById(id: Long) {
-//        dao.likeById(id)
+    override fun likeUnlike(post: Post) {
+        val requestLike: Request = Request.Builder()
+            .post("".toRequestBody())
+            .url("${BASE_URL}/api/slow/posts/${post.id}/likes")
+            .build()
 
+        val requestUnlike: Request = Request.Builder()
+            .delete()
+            .url("${BASE_URL}/api/slow/posts/${post.id}/likes")
+            .build()
+
+        client.newCall( if (post.likedByMe) requestUnlike else requestLike )
+            .execute()
+            .use { it.body?.string() }
     }
-
-
-//    override fun shareById(id: Long) {
-//        dao.shareById(id)
-//    }
 
 
     override fun removeById(id: Long) {
-//        dao.removeById(id)
         val request: Request = Request.Builder()
             .delete()
             .url("${BASE_URL}/api/slow/posts/$id")
@@ -75,7 +81,6 @@ class PostRepositoryImpl : PostRepository {
 
 
     override fun save(post: Post) {
-//        dao.save(PostEntity.fromDto(post))
         val request: Request = Request.Builder()
             .post(gson.toJson(post).toRequestBody(jsonType))
             .url("${BASE_URL}/api/slow/posts")
@@ -83,10 +88,6 @@ class PostRepositoryImpl : PostRepository {
 
         client.newCall(request)
             .execute()
+            .use { it.body?.string() }
     }
-
-
-//    override fun insertPost(post: Post) {
-//        dao.insert(PostEntity.fromDto(post))
-//    }
 }

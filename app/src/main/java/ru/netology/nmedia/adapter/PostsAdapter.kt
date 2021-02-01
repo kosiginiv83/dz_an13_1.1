@@ -1,7 +1,7 @@
 package ru.netology.nmedia.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
+import java.time.Instant
+import java.time.ZoneId
+import java.util.Date
 
 
 fun getFormattedNum(num: Int) : String = when(num) {
@@ -17,7 +20,14 @@ fun getFormattedNum(num: Int) : String = when(num) {
     in 1_000..9_999 -> "${num / 1_000}.${num % 1_000 / 100}K"
     in 10_000..999_999 -> (num / 1_000).toString() + "K"
     in 1_000_000..Int.MAX_VALUE -> "${num / 1_000_000}.${num % 1_000_000 / 100_000}M"
-    else -> throw IllegalArgumentException("Некорректное число")
+    else -> "0"
+}
+
+fun getFormattedDate(epoch: String) : String = try {
+    Date(epoch.toLong() * 1000).toString()
+//    Instant.ofEpochSecond(epoch.toLong()).atZone(ZoneId.systemDefault()).toLocalDateTime().toString()
+} catch (e: Exception) {
+    ""
 }
 
 
@@ -39,14 +49,12 @@ class PostsAdapter(
         val post = getItem(position)
         payloads.forEach {
             when (it) {
-                PostDiffCallback.LIKED_BY_ME ->
+                PostDiffCallback.LIKED_BY_ME -> {
                     holder.binding.btnLike.isChecked = post.likedByMe
-                PostDiffCallback.LIKES_COUNT ->
+                }
+                PostDiffCallback.LIKES_COUNT -> {
                     holder.binding.btnLike.text = getFormattedNum(post.likes)
-//                PostDiffCallback.SHARES_COUNT ->
-//                    holder.binding.btnShare.text = getFormattedNum(post.sharesCount)
-//                PostDiffCallback.VIEWS_COUNT ->
-//                    holder.binding.viewsCount.text = getFormattedNum(post.viewsCount)
+                }
                 PostDiffCallback.CONTENT -> {
                     holder.binding.content.text = post.content
                 }
@@ -66,25 +74,21 @@ class PostViewHolder(
     fun bind(post: Post) {
         binding.apply {
             author.text = post.author
-            published.text = post.published
+            published.text = getFormattedDate(post.published)
             content.text = post.content
             btnLike.isChecked = post.likedByMe
+            btnLike.setIconResource (
+                if (post.likedByMe) R.drawable.ic_heart_red else R.drawable.ic_heart2
+            )
+            btnLike.setIconTintResource(
+                if (post.likedByMe) R.color.red else R.color.grey
+            )
             btnLike.text = getFormattedNum(post.likes)
-//            btnShare.text = getFormattedNum(post.sharesCount)
-//            viewsCount.text = getFormattedNum(post.viewsCount)
             btnLike.setOnClickListener { onInteractionListener.onLike(post) }
             btnShare.setOnClickListener { onInteractionListener.onShare(post) }
             cardPost.setOnClickListener { onInteractionListener.onPostOpen(post) }
             content.setOnClickListener { onInteractionListener.onPostOpen(post) }
             postImg.setOnClickListener { onInteractionListener.onPostOpen(post) }
-//            postImg.setImageResource(post.imgLink ?: 0)
-
-//            if (post.videoLink != null) {
-//                videoBtn.setImageResource(post.videoPreviewLink ?: R.drawable.youtube_img)
-//                playBtn.visibility = if (post.videoPreviewLink != 0) View.VISIBLE else View.GONE
-//                playBtn.setOnClickListener { onInteractionListener.onVideoOpen(post) }
-//                videoBtn.setOnClickListener { onInteractionListener.onVideoOpen(post) }
-//            }
 
             menuButton.setOnClickListener {
                 PopupMenu(it.context, it).apply {
@@ -113,8 +117,6 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     companion object {
         const val LIKED_BY_ME = "likedByMe"
         const val LIKES_COUNT = "likesCount"
-        const val SHARES_COUNT = "sharesCount"
-        const val VIEWS_COUNT = "viewsCount"
         const val PUBLISHED = "published"
         const val CONTENT = "content"
     }
@@ -131,8 +133,6 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
         val set = mutableSetOf<String>()
         if (newItem.likedByMe != oldItem.likedByMe) set.add(LIKED_BY_ME)
         if (newItem.likes != oldItem.likes) set.add(LIKES_COUNT)
-//        if (newItem.sharesCount != oldItem.sharesCount) set.add(SHARES_COUNT)
-//        if (newItem.viewsCount != oldItem.viewsCount) set.add(VIEWS_COUNT)
         if (newItem.published != oldItem.published) set.add(PUBLISHED)
         if (newItem.content != oldItem.content) set.add(CONTENT)
         return set
