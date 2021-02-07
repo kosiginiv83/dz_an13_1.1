@@ -25,9 +25,7 @@ class FeedFragment : Fragment() {
     private var _binding: FragmentFeedBinding? = null
     private val binding get() = _binding!!
 
-    val viewModel: PostViewModel by viewModels(
-        ownerProducer = ::requireParentFragment
-    )
+    val viewModel: PostViewModel by viewModels( ownerProducer = ::requireParentFragment )
 
 
     private val postsAdapter by lazy {
@@ -91,9 +89,11 @@ class FeedFragment : Fragment() {
             binding.addPostFab.isVisible = state.idle
             binding.errorGroup.isVisible = state.error
             binding.emptyText.isVisible = state.empty
+            binding.swipeRefreshWidget.isRefreshing = false
         }
 
         binding.retryButton.setOnClickListener {
+            binding.progressBar.isVisible = true
             viewModel.loadPosts()
         }
 
@@ -112,7 +112,6 @@ class FeedFragment : Fragment() {
 
         binding.swipeRefreshWidget.apply {
             setProgressViewEndTarget(false, 0)
-            isRefreshing = false
             setOnRefreshListener {
                 binding.addPostFab.isVisible = false
                 binding.progressBar.isVisible = true
