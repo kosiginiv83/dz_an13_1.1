@@ -4,7 +4,6 @@ import ru.netology.nmedia.dto.Post
 
 
 interface PostRepository {
-
     fun getAllAsync(callback: GetAllCallback)
     fun getPostByIdAsync(id: Long, callback: GetPostByIdCallback)
     fun likeUnlikeAsync(post: Post, callback: LikeUnlikeCallback)

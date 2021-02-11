@@ -1,8 +1,9 @@
 package ru.netology.nmedia.adapter
 
-import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -10,9 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
-import java.time.Instant
-import java.time.ZoneId
 import java.util.Date
+import com.bumptech.glide.Glide
+import ru.netology.nmedia.activity.TAG
+import ru.netology.nmedia.repository.PostRepositoryImpl
 
 
 fun getFormattedNum(num: Int) : String = when(num) {
@@ -28,6 +30,25 @@ fun getFormattedDate(epoch: String) : String = try {
 //    Instant.ofEpochSecond(epoch.toLong()).atZone(ZoneId.systemDefault()).toLocalDateTime().toString()
 } catch (e: Exception) {
     ""
+}
+
+fun setAvatar(view: ImageView, fileName: String) {
+    val url = PostRepositoryImpl.BASE_URL + "/avatars/" + fileName
+    Glide.with(view)
+        .load(url)
+        .circleCrop()
+        .placeholder(R.drawable.ic_loading_100dp)
+        .error(R.drawable.ic_error_100dp)
+        .timeout(10_000)
+        .into(view)
+}
+
+fun setImage(view: ImageView, fileName: String?) {
+    val url = PostRepositoryImpl.BASE_URL + "/images/" + fileName
+    Glide.with(view)
+        .load(url)
+        .timeout(10_000)
+        .into(view)
 }
 
 
@@ -73,6 +94,8 @@ class PostViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) {
         binding.apply {
+            setAvatar(avatar, post.authorAvatar)
+            if (post.attachment != null) setImage(postImg, post.attachment.url)
             author.text = post.author
             published.text = getFormattedDate(post.published)
             content.text = post.content

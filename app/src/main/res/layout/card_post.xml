@@ -15,7 +15,7 @@
         android:layout_height="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_netology_48dp" />
+        app:srcCompat="@drawable/ic_loading_100dp" />
 
     <TextView
         android:id="@+id/author"
@@ -77,18 +77,17 @@
 
     <ImageView
         android:id="@+id/post_img"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
+        android:background="?android:attr/selectableItemBackground"
+        android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/content"
-        tools:visibility="gone"
-        tools:srcCompat="@drawable/post_image_2" />
+        tools:srcCompat="@drawable/post_image_2"
+        tools:visibility="gone" />
 
     <ImageButton
         android:id="@+id/video_btn"
