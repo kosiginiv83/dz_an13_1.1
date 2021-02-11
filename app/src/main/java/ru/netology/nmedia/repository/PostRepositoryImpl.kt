@@ -19,8 +19,8 @@ class PostRepositoryImpl : PostRepository {
     private val typeTokenPost = object : TypeToken<Post>() {}
 
     companion object {
-//        private const val BASE_URL = "http://10.0.2.2:9999" // AVD
-        private const val BASE_URL = "http://10.0.3.2:9999" // Genymotion
+        const val BASE_URL = "http://10.0.2.2:9999" // AVD
+//        const val BASE_URL = "http://10.0.3.2:9999" // Genymotion
         private val jsonType = "application/json".toMediaType()
     }
 
