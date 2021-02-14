@@ -88,6 +88,7 @@ class SinglePostFragment : Fragment() {
             singlePostAdapter.submitList(it.posts)
             binding.progressBar.isVisible = it.refreshing
             binding.errorGroup.isVisible = it.error
+            binding.swipeRefreshWidget.isRefreshing = false
         }
 
         binding.retryButton.setOnClickListener {
@@ -96,7 +97,6 @@ class SinglePostFragment : Fragment() {
 
         binding.swipeRefreshWidget.apply {
             setProgressViewEndTarget(false, 0)
-            isRefreshing = false
             setOnRefreshListener {
                 binding.progressBar.isVisible = true
                 viewModel.getPostById(postId)
